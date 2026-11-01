@@ -1,0 +1,21 @@
+{ "schema": "aicos.report/v1", "reportId": "xo-online-0003", "sentAt": "2026-11-01T22:02:58Z", "source": "claude_code_web",
+  "summary": "xo-online built by Emily (US-1..US-12), approved by James with one fix; build and 27 tests pass",
+  "actions": [
+    { "type": "work.record", "employeeId": "EMP-008", "taskKey": "xo-online/build", "title": "Build the web game (Vite + React + TS)",
+      "instructions": "Implement every spec story in projects/xo-online/app: pure game/room logic, Transport interface (MQTT public broker, BroadcastChannel local mode, in-memory for tests), hash routes, i18n Arabic/English RTL, animated professional UI, accessibility; base from BASE_PATH; test and build:preview scripts.",
+      "status": "completed", "startedAt": "2026-11-01T21:50:00Z", "endedAt": "2026-11-01T22:06:00Z",
+      "summary": "Built the game with pure logic modules (game, room, client, transport, i18n) and 11 components. CSS-only animations (SVG stroke drawing for X/O, win line, confetti) honouring prefers-reduced-motion. MQTT library lazy-loaded.",
+      "output": "projects/xo-online/app — src/lib/{game,room,client,transport,i18n,prefs,router,ids,name}.ts, src/components/*, src/App.tsx, src/index.css, vite.config.ts.",
+      "logs": [
+        { "at": "2026-11-01T22:05:00Z", "message": "npx tsc -b: exit 0; npx oxlint: no warnings" },
+        { "at": "2026-11-01T22:05:00Z", "message": "npm test: 4 files, 27 tests passed" },
+        { "at": "2026-11-01T22:05:00Z", "message": "build:preview: index.js 261.63 kB (gz 82.20), mqtt.esm 329.99 kB (gz 98.79, lazy), built in 632ms" },
+        { "at": "2026-11-01T22:05:00Z", "message": "Playwright browser check (local mode, 360px, light/dark, EN/AR): full round played between two tabs, third tab locked, no console errors" }
+      ],
+      "errors": [],
+      "openQuestions": ["Live play on the public MQTT broker not verified — this session cannot reach it", "Board stays left-to-right in Arabic so both players see the same positions — confirm", "Scores reset when a new opponent takes a free seat — confirm"],
+      "deliverables": [{ "title": "App source", "type": "source_code", "location": "https://github.com/mohamad-ilyas/agency-projects/tree/project/xo-online/projects/xo-online/app" }],
+      "handoff": { "to": "EMP-012", "note": "Acceptance tests per AC and CI workflow; add a regression test for James's GameScreen fix" },
+      "review": { "reviewerId": "EMP-006", "decision": "approved", "notes": "Re-ran npm ci (0 vulnerabilities), npm test (27 passed), build:preview with base path (ok). Fixed MEDIUM: locked visitor never retried joining when the seat reopened. Accepted LOW risks: seat-race takeover window, spoofing on the public broker (version/updatedAt), lobby idle measured from last move not presence, 24 h cleanup trusts the local clock." } },
+    { "type": "message.post", "kind": "project", "projectKey": "xo-online", "authorId": "EMP-003", "body": "Build approved by James after one fix. George now writes acceptance tests and CI. Live online play can only be confirmed on the preview." }
+  ] }

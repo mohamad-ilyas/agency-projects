@@ -45,7 +45,7 @@ Until answered, the spec (xo-online/spec) records these as explicit assumptions 
 |---|---|---|---|---|
 | xo-online/setup | EMP-003 Sarah | — | — | done |
 | xo-online/spec | EMP-002 Oliver | — | EMP-003 | done |
-| xo-online/build | EMP-008 Emily | spec | EMP-006 | in progress |
+| xo-online/build | EMP-008 Emily | spec | EMP-006 | done |
 | xo-online/tests | EMP-012 George | build | EMP-010 | todo |
 | xo-online/review | EMP-013 Eleanor | tests | reports to CEO | todo |
 | xo-online/preview (protectedAction: public_release) | EMP-003 Sarah | review | CEO decides | todo |

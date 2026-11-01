@@ -1,32 +1,10 @@
-# React + TypeScript + Vite
+# xo-online app
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Two-player online XO (tic-tac-toe). Vite + React + TypeScript static site; realtime via a free public MQTT broker.
 
-Currently, two official plugins are available:
-
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
-
-## React Compiler
-
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
-
-## Expanding the Oxlint configuration
-
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
-```
-
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+- `npm run dev` · `npm test` · `npm run build:preview` (set `BASE_PATH=/agency-projects/xo-online/` for the preview).
+- Broker: `wss://broker.hivemq.com:8884/mqtt` by default; override with `VITE_BROKER_URL`. Data on the public broker is
+  readable/spoofable by anyone: casual use only, no personal data beyond a display name.
+- Same-browser test mode (no broker): open `…/?transport=local#/` in two tabs.
+- Code: `src/lib/game.ts` (rules), `src/lib/room.ts` (room model/reducers/lobby/conflicts), `src/lib/transport.ts`
+  (MQTT / BroadcastChannel / in-memory), `src/lib/client.ts` (topics, presence, conflict merge).
