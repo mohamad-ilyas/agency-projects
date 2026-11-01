@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, viewport-fit=cover"
+    />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f6f7f9" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0f1115" media="(prefers-color-scheme: dark)" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Tasks" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="description" content="Tasks / المهام: a simple to-do list stored only in this browser." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>Tasks · المهام</title>
+    <script>
+      // Pre-paint: apply saved language and theme before React renders to avoid a flash.
+      // Keys must match src/lib/storage.ts (STORAGE_KEYS).
+      (function () {
+        var root = document.documentElement;
+        var lang = null;
+        var theme = null;
+        try {
+          lang = localStorage.getItem('todo-app:v1:lang');
+          theme = localStorage.getItem('todo-app:v1:theme');
+        } catch (e) {}
+        if (lang !== 'ar' && lang !== 'en') {
+          lang = (navigator.language || '').toLowerCase().indexOf('ar') === 0 ? 'ar' : 'en';
+        }
+        if (theme !== 'light' && theme !== 'dark') {
+          theme =
+            window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches
+              ? 'dark'
+              : 'light';
+        }
+        root.lang = lang;
+        root.dir = lang === 'ar' ? 'rtl' : 'ltr';
+        root.dataset.theme = theme;
+        root.style.colorScheme = theme;
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
