@@ -1,0 +1,24 @@
+{ "schema": "aicos.report/v1", "reportId": "todo-app-0006", "sentAt": "2026-11-01T21:12:54Z", "source": "claude_code_web",
+  "summary": "todo-app preview prepared (not published); public_release approval requested from the CEO",
+  "actions": [
+    { "type": "project.upsert", "key": "todo-app", "name": "Team to-do app", "client": "Internal — team", "status": "review",
+      "repoUrl": "https://github.com/mohamad-ilyas/agency-projects/tree/project/todo-app/projects/todo-app" },
+    { "type": "work.record", "employeeId": "EMP-003", "taskKey": "todo-app/preview", "title": "Prepare the preview for CEO approval",
+      "instructions": "Do not publish. Update PROJECT.md with status and how the CEO publishes; file the public_release approval request.",
+      "status": "completed", "startedAt": "2026-11-01T21:19:00Z", "endedAt": "2026-11-01T21:12:54Z",
+      "summary": "Preview prepared, not published. PROJECT.md updated with status, review conditions and the publish steps. Approval request filed for the CEO.",
+      "output": "PROJECT.md: preview under review — awaiting CEO approval. Publish: Actions → Publish previews → Run workflow, approve the github-pages deployment; served at https://mohamad-ilyas.github.io/agency-projects/todo-app/.",
+      "openQuestions": ["CEO to confirm or amend spec assumptions A-1..A-5"],
+      "deliverables": [{ "title": "PROJECT.md", "type": "documentation", "location": "https://github.com/mohamad-ilyas/agency-projects/blob/project/todo-app/projects/todo-app/PROJECT.md" }] },
+    { "type": "task.status", "taskKey": "todo-app/preview", "status": "under_review", "note": "Waiting for the CEO to run Publish previews and approve", "by": "EMP-003" },
+    { "type": "approval.request", "action": "public_release", "title": "Publish the todo-app preview (GitHub Pages)", "requestedBy": "EMP-003",
+      "reason": "todo-app has finished spec, build, tests (95/95 locally, 3 green todo-app CI runs) and independent review (Go with conditions, preview only). Publishing the preview is a public release, so it needs your explicit approval before the Publish previews workflow runs.",
+      "impact": "If approved, the static app becomes public at https://mohamad-ilyas.github.io/agency-projects/todo-app/, labelled not yet checked on a real iPhone/VoiceOver. Data stays in each browser; $0. Approval also accepts assumptions A-1..A-5 (or amend them). A real-iPhone pass is still needed before daily use; 7 low findings stay logged with EMP-008 and EMP-012.",
+      "risk": "low", "projectKey": "todo-app", "taskKey": "todo-app/preview",
+      "supportingFiles": [
+        { "label": "Publish previews workflow", "url": "https://github.com/mohamad-ilyas/agency-projects/actions/workflows/publish-previews.yml" },
+        { "label": "Independent review", "url": "https://github.com/mohamad-ilyas/agency-projects/blob/project/todo-app/projects/todo-app/docs/review.md" },
+        { "label": "Test report", "url": "https://github.com/mohamad-ilyas/agency-projects/blob/project/todo-app/projects/todo-app/docs/test-report.md" }
+      ] },
+    { "type": "message.post", "kind": "project", "projectKey": "todo-app", "authorId": "EMP-003", "body": "todo-app is ready for the CEO: review Go with conditions, 95/95 tests, CI green. Preview not published — approval request filed (public_release). CEO please confirm assumptions A-1..A-5 in docs/spec.md." }
+  ] }

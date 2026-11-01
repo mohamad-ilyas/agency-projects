@@ -1,0 +1,8 @@
+{ "schema": "aicos.report/v1", "reportId": "todo-app-0007", "sentAt": "2026-11-01T21:22:49Z", "source": "claude_code_web",
+  "summary": "todo-app preview published after CEO approval",
+  "actions": [
+    { "type": "deliverable.record", "title": "todo-app live preview", "deliverableType": "client_deliverable",
+      "location": "https://mohamad-ilyas.github.io/agency-projects/todo-app/", "projectKey": "todo-app", "ownerId": "EMP-003" },
+    { "type": "message.post", "kind": "project", "projectKey": "todo-app", "authorId": "EMP-003",
+      "body": "CEO approved and published the preview: Publish previews run 41351368622 (build + deploy success). Live at https://mohamad-ilyas.github.io/agency-projects/todo-app/. Remaining: CEO merge of project/todo-app into main; real-iPhone/VoiceOver pass; low findings F-1..F-7." }
+  ] }
