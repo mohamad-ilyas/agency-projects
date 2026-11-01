@@ -1,0 +1,5 @@
+{
+  "$comment": "Public connection settings. Both values are public by design; data is protected by sign-in + Row Level Security. Never put the secret key or an agent key here.",
+  "supabaseUrl": "https://qdezhdwmjrmpqjgzludj.supabase.co",
+  "supabasePublishableKey": "sb_publishable_S21EsB4pX-DE82mXMm1W6g_OQYp8kj1"
+}

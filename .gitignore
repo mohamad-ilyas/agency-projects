@@ -1,0 +1,17 @@
+node_modules/
+.expo/
+dist/
+build/
+*.apk
+*.aab
+*.ipa
+.env*
+*.keystore
+*.jks
+*.p8
+*.p12
+*.mobileprovision
+# Report files can contain client material; they are delivered through the agent channel.
+/company/outbox/*
+!/company/outbox/.gitkeep
+.claude/settings.local.json
