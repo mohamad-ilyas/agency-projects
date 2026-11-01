@@ -47,8 +47,8 @@ Until answered, the spec (xo-online/spec) records these as explicit assumptions 
 | xo-online/spec | EMP-002 Oliver | — | EMP-003 | done |
 | xo-online/build | EMP-008 Emily | spec | EMP-006 | done |
 | xo-online/tests | EMP-012 George | build | EMP-010 | done |
-| xo-online/review | EMP-013 Eleanor | tests | reports to CEO | in progress |
-| xo-online/preview (protectedAction: public_release) | EMP-003 Sarah | review | CEO decides | todo |
+| xo-online/review | EMP-013 Eleanor | tests | reports to CEO | done — Go with conditions |
+| xo-online/preview (protectedAction: public_release) | EMP-003 Sarah | review | CEO decides | in review — waiting for CEO approval |
 
 Approval gate: xo-online/preview is a public release — prepared by EMP-003 and sent to the CEO Approval Center; not performed without explicit CEO approval.
 
