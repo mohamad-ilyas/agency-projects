@@ -37,7 +37,8 @@ jobs:
         run: |
           if [ -z "$AICOS_AGENT_KEY" ]; then echo "::error::Repository secret AICOS_AGENT_KEY is not set"; exit 1; fi
           sent=0; failed=0
-          for ref in $(git for-each-ref --format='%(refname:short)' 'refs/remotes/origin/*' | grep -v '^origin/HEAD$' | grep -v '^origin$'); do
+          # A bare prefix matches branches at any depth (project/todo-app); a trailing /* would not.
+          for ref in $(git for-each-ref --format='%(refname:short)' refs/remotes/origin | grep -vx 'origin/HEAD' | grep -vx 'origin'); do
             for f in $(git ls-tree -r --name-only "$ref" | grep -E '^(projects/[^/]+/)?reports/[^/]+\.json$'); do
               git show "$ref:$f" > "$RUNNER_TEMP/report.json"
               if node scripts/aicos-report.mjs "$RUNNER_TEMP/report.json" > /dev/null; then

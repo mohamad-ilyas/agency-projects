@@ -36,6 +36,14 @@ Projects and tasks are referenced by **keys you choose and never change**: lower
 Project `cedar-app`; tasks `cedar-app/requirements`, `cedar-app/build-cart`. Re-sending `project.upsert` / `task.upsert`
 with the same key updates the record instead of duplicating it. Record every key in `projects/<key>/PROJECT.md`.
 
+## Allowed values (use exactly these)
+
+- `work.record.status`: `completed` · `in_progress` (started, not finished) · `needs_input` · `failed`
+- deliverable `type` / `deliverableType`: `design` · `brand_guidelines` · `requirements` · `technical_spec` · `source_code` · `test_report` · `documentation` · `client_deliverable`
+- `source`: `claude_code` · `claude_code_web` · `claude_chat`
+
+The dashboard translates a few near-misses (e.g. `document` → `documentation`) and skips only an invalid action, never the whole report — but check with `npm run report -- --check <file>` in the dashboard repository when you can.
+
 ## Actions
 
 ```jsonc

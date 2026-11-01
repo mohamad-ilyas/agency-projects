@@ -300,6 +300,7 @@
                 "type": "string",
                 "enum": [
                   "completed",
+                  "in_progress",
                   "needs_input",
                   "failed"
                 ]
@@ -369,7 +370,6 @@
                 }
               },
               "deliverables": {
-                "default": [],
                 "maxItems": 50,
                 "type": "array",
                 "items": {
