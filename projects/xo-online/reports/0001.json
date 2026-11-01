@@ -1,0 +1,29 @@
+{
+  "schema": "aicos.report/v1",
+  "reportId": "xo-online-0001",
+  "sentAt": "2026-11-01T21:43:44Z",
+  "source": "claude_code_web",
+  "summary": "xo-online set up: online two-player XO web game, 5 tasks (spec, build, tests, review, preview)",
+  "actions": [
+    { "type": "project.upsert", "key": "xo-online", "name": "XO Online", "client": "Internal — CEO",
+      "description": "Two-player online XO (tic-tac-toe) web game played through a shared link, with names, locked rooms, a lobby of open games, rematch and score. Professional, fully animated UI.",
+      "businessRequirements": "Players enter names; share a game link; a third visitor sees the game is locked; the lobby lists games waiting for a player; rematch with the same opponent; running score; professional animated UI; Arabic (RTL) + English.",
+      "technicalRequirements": "Vite + React + TypeScript static site; realtime through a free public MQTT broker over WSS (no accounts, $0), configurable broker URL; hash routes for share links; Vitest + Testing Library; GitHub Actions CI; preview at /agency-projects/xo-online/.",
+      "scope": "In: the features above. Out: accounts, matchmaking against strangers by skill, chat, spectating, AI opponent, persistent history across devices.",
+      "priority": "medium", "startDate": "2026-11-01", "managerId": "EMP-003",
+      "memberIds": ["EMP-002","EMP-008","EMP-006","EMP-012","EMP-010","EMP-013"],
+      "repoUrl": "https://github.com/mohamad-ilyas/agency-projects/tree/project/xo-online/projects/xo-online",
+      "status": "development" },
+    { "type": "task.upsert", "key": "xo-online/spec", "projectKey": "xo-online", "title": "One-page spec with user stories", "assigneeId": "EMP-002", "priority": "medium", "stage": "client_request",
+      "acceptanceCriteria": ["User stories with Given/When/Then for names, share link, locked room, lobby, rematch, score, animated UI", "Arabic (RTL) + English", "Out-of-scope list", "At most one page"], "expectedOutput": "projects/xo-online/docs/spec.md" },
+    { "type": "task.upsert", "key": "xo-online/build", "projectKey": "xo-online", "title": "Build the web game (Vite + React + TS)", "assigneeId": "EMP-008", "priority": "medium", "stage": "development", "dependsOn": ["xo-online/spec"],
+      "acceptanceCriteria": ["Every spec story implemented", "Keyboard-accessible semantic HTML", "RTL-correct with language switch", "Realtime transport at $0 behind an interface", "base from BASE_PATH; build:preview script; npm run build:preview passes"], "expectedOutput": "projects/xo-online/app" },
+    { "type": "task.upsert", "key": "xo-online/tests", "projectKey": "xo-online", "title": "Automated tests and CI", "assigneeId": "EMP-012", "priority": "medium", "stage": "quality_assurance", "dependsOn": ["xo-online/build"],
+      "acceptanceCriteria": ["A Vitest + Testing Library test per acceptance criterion", ".github/workflows/xo-online.yml path-filtered, runs npm ci, npm test, npm run build:preview", "Real test output recorded"], "expectedOutput": "Tests in projects/xo-online/app and .github/workflows/xo-online.yml" },
+    { "type": "task.upsert", "key": "xo-online/review", "projectKey": "xo-online", "title": "Independent quality review", "assigneeId": "EMP-013", "priority": "medium", "stage": "independent_review", "dependsOn": ["xo-online/tests"],
+      "acceptanceCriteria": ["Claims vs evidence per acceptance criterion", "Tests and build re-run", "Findings with severity", "Go / Go with conditions / No-go"], "expectedOutput": "projects/xo-online/docs/review.md" },
+    { "type": "task.upsert", "key": "xo-online/preview", "projectKey": "xo-online", "title": "Preview link for the CEO", "assigneeId": "EMP-003", "priority": "medium", "stage": "delivery", "dependsOn": ["xo-online/review"], "protectedAction": "public_release",
+      "acceptanceCriteria": ["Preview prepared, not published", "approval.request filed for the CEO"], "expectedOutput": "https://mohamad-ilyas.github.io/agency-projects/xo-online/ after the CEO runs Publish previews" },
+    { "type": "message.post", "kind": "project", "projectKey": "xo-online", "authorId": "EMP-003", "body": "XO Online kicked off as a quick app. Realtime play will use a free public MQTT broker (no accounts, $0) — open question 1 asks the CEO to confirm that. Oliver is writing the spec." }
+  ]
+}
