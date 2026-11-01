@@ -37,7 +37,7 @@ Until answered, the spec (todo-app/spec) records these as explicit assumptions f
 | Task | Owner | Depends on | Reviewer | Status |
 |---|---|---|---|---|
 | todo-app/setup | EMP-003 Sarah | — | — | done |
-| todo-app/spec | EMP-002 Oliver | — | EMP-003 | todo |
+| todo-app/spec | EMP-002 Oliver | — | EMP-003 | done |
 | todo-app/build | EMP-008 Emily | spec | EMP-006 | todo |
 | todo-app/tests | EMP-012 George | build | EMP-010 | todo |
 | todo-app/review | EMP-013 Eleanor | tests | reports to CEO | todo |
