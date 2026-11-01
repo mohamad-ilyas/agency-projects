@@ -1,0 +1,22 @@
+{ "schema": "aicos.report/v1", "reportId": "xo-online-0006", "sentAt": "2026-11-01T22:20:04Z", "source": "claude_code_web",
+  "summary": "xo-online preview prepared (not published); public_release approval requested from the CEO",
+  "actions": [
+    { "type": "work.record", "employeeId": "EMP-003", "taskKey": "xo-online/preview", "title": "Preview link for the CEO",
+      "instructions": "Prepare the preview without publishing; file approval.request public_release.",
+      "status": "completed", "startedAt": "2026-11-01T22:20:00Z", "endedAt": "2026-11-01T22:20:04Z",
+      "summary": "Branch project/xo-online has a build:preview script and passes CI, so the Publish previews workflow will serve it at /agency-projects/xo-online/. Nothing published; approval requested.",
+      "output": "After CEO approval: Actions → Publish previews → Run workflow, approve the github-pages deployment; the game appears at https://mohamad-ilyas.github.io/agency-projects/xo-online/",
+      "deliverables": [{ "title": "Project state", "type": "documentation", "location": "https://github.com/mohamad-ilyas/agency-projects/blob/project/xo-online/projects/xo-online/PROJECT.md" }] },
+    { "type": "task.status", "taskKey": "xo-online/preview", "status": "review", "note": "Waiting for CEO approval of the public preview", "by": "EMP-003" },
+    { "type": "approval.request", "action": "public_release", "title": "Publish the XO Online preview", "requestedBy": "EMP-003",
+      "reason": "Spec, build, 88 automated tests, green CI and an independent review (Go with conditions) are done. The preview is the only way to verify live online play, which this build session could not reach.",
+      "impact": "Makes the game public at https://mohamad-ilyas.github.io/agency-projects/xo-online/. Games, player names and moves travel through the free public HiveMQ MQTT broker, readable by anyone (assumption A1).",
+      "risk": "medium", "projectKey": "xo-online", "taskKey": "xo-online/preview",
+      "supportingFiles": [
+        { "label": "Publish previews workflow", "url": "https://github.com/mohamad-ilyas/agency-projects/actions/workflows/publish-previews.yml" },
+        { "label": "Independent review", "url": "https://github.com/mohamad-ilyas/agency-projects/blob/project/xo-online/projects/xo-online/docs/review.md" },
+        { "label": "Spec (assumptions A1–A6)", "url": "https://github.com/mohamad-ilyas/agency-projects/blob/project/xo-online/projects/xo-online/docs/spec.md" },
+        { "label": "CI run", "url": "https://github.com/mohamad-ilyas/agency-projects/actions/runs/41356126723" }
+      ] },
+    { "type": "message.post", "kind": "project", "projectKey": "xo-online", "authorId": "EMP-003", "body": "XO Online preview is ready and waiting in the Approval Center. Please also confirm assumptions A1–A6 (especially A1, the public broker). After publishing, Amelia should run a two-device live check." }
+  ] }

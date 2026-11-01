@@ -54,7 +54,13 @@ Approval gate: xo-online/preview is a public release — prepared by EMP-003 and
 
 ## Status
 
-- Set up done; spec done (approved by EMP-003, assumptions A1–A6 still await CEO confirmation); build in progress.
+- Spec, build, tests and independent review: done. Preview: not published. It is waiting for CEO approval (approval.request `public_release` filed in report 0006).
+- Review verdict (`docs/review.md`): **Go with conditions**:
+  1. The CEO confirms or amends assumptions A1–A6 — at least A1 (free public broker; open lobby that anyone can read and write).
+  2. After publishing, EMP-011 runs a two-device live-broker check and a reduced-motion check, recording dates and devices. Live online play is unverified until then.
+  3. EMP-012 corrects the test-report figures (it says 48 ACs, the spec has 42; the partial list and CI statement are out of date). Non-blocking.
+- Follow-ups (EMP-008): F-02 bound version/timestamps in `parseRoom` and cap lobby size; F-03 stop a fast client clock from deleting live games; F-06 bidi-isolate player names; F-09 privacy wording must say the broker is public.
+- Test evidence: 88/88 tests passed locally (EMP-012 George; re-run by EMP-013 Eleanor). GitHub CI "xo-online CI" runs 41355320188 and 41356126723 succeeded.
 
 ## How the CEO publishes the preview
 
@@ -63,4 +69,4 @@ Approval gate: xo-online/preview is a public release — prepared by EMP-003 and
 3. The preview appears at https://mohamad-ilyas.github.io/agency-projects/xo-online/.
 4. Approve `xo-online/preview` in the dashboard's Approval Center.
 
-Reports: projects/xo-online/reports/0001.json
+Reports: projects/xo-online/reports/0001.json, 0002.json, 0003.json, 0004.json, 0005.json, 0006.json
