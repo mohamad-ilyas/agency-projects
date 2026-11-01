@@ -41,7 +41,7 @@ Until answered, the spec (todo-app/spec) records these as explicit assumptions f
 | todo-app/build | EMP-008 Emily | spec | EMP-006 | done |
 | todo-app/tests | EMP-012 George | build | EMP-010 | done |
 | todo-app/review | EMP-013 Eleanor | tests | reports to CEO | done — Go with conditions |
-| todo-app/preview (protectedAction: public_release) | EMP-003 Sarah | review | CEO decides | under review — awaiting CEO approval (public_release) |
+| todo-app/preview (protectedAction: public_release) | EMP-003 Sarah | review | CEO decides | done — CEO approved; published 2026-11-01 (run 41351368622) |
 
 Approval gate: todo-app/preview is a public release — prepared by EMP-003 and sent to the CEO Approval Center; not performed without explicit CEO approval.
 
