@@ -29,7 +29,7 @@ This is a single-page web app the internal team uses to track to-do tasks. Tasks
 
 **US-6 Tasks-left count.** As a team member, I want to see how many tasks are left so that I know my workload.
 - AC-6.1 Given N active tasks (the count ignores the current filter), Then the footer shows N with the correct plural form. English: "1 task left", "0 tasks left", "2 tasks left".
-- AC-6.2 Arabic uses all six CLDR plural categories: 0 → zero, 1 → one, 2 → two, 3–10 → few, 11–99 → many, 100+ → other. Example: "مهمة واحدة متبقية", "مهمتان متبقيتان", "3 مهام متبقية", "11 مهمة متبقية".
+- AC-6.2 Given the language is Arabic, Then the plural form is chosen by the CLDR Arabic plural rules (all six categories, as returned by `Intl.PluralRules('ar')`): zero (n = 0), one (n = 1), two (n = 2), few (n % 100 in 3–10), many (n % 100 in 11–99), other (everything else, e.g. 100–102). Examples: 0 → zero, 1 → one, 2 → two, 3 → few, 11 → many, 100 → other, 103 → few, 111 → many. Example text: "مهمة واحدة متبقية", "مهمتان متبقيتان", "3 مهام متبقية", "11 مهمة متبقية".
 
 **US-7 Language.** As a team member, I want to switch between Arabic and English so that I can use my preferred language.
 - AC-7.1 Given the switch, When I select Arabic, Then all UI text is in Arabic and `<html lang="ar" dir="rtl">` is set. When I select English, Then `<html lang="en" dir="ltr">` is set.
