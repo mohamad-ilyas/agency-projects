@@ -9,9 +9,9 @@ The CEO's request: $ARGUMENTS
 2. **Rules.** The rules in `.claude/commands/new-project.md` apply: $0, protected actions go to the CEO, client code only in `agency-projects` (public — codenames, no confidential material), honesty about what was run, git branch `project/<key>` for project work (or `task/<short-name>` otherwise), never push to `main`.
 3. **Record the start time** (`date -u +%Y-%m-%dT%H:%M:%SZ`) and **delegate** to that employee's subagent with the request, the relevant files, and the acceptance criteria you infer (state them).
 4. If the work produced files, commit them. Record the end time.
-5. **Report.** Write `company/outbox/task-<short-name>.report.json` per `docs/agent-report.md`:
+5. **Report.** Write the report per `docs/agent-report.md` to `projects/<key>/reports/task-<short-name>.json` (with a project key) or `reports/task-<short-name>.json` (without), commit, and push — GitHub delivers it to the dashboard within ~10 minutes:
    - with a project key: a `task.upsert` (key `<project>/<short-name>`, assignee = the employee) and a `work.record` for it;
    - without one: just the `work.record`.
    Do **not** add a `review` — the CEO reviews single tasks in the dashboard (Execution Center → the record → Approve / Request changes).
-   Send it: `node scripts/aicos-report.mjs <file>`. On `NO_AGENT_KEY`, show the JSON in a ```json block for Execution Center → Import team report.
+   Also try an immediate send: `node scripts/aicos-report.mjs <file> || true` (a failure is fine; never a duplicate).
 6. **Tell the CEO** in a few lines what the employee produced and that it is waiting for review in the dashboard.

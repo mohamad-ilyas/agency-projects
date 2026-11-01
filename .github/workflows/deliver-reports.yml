@@ -1,0 +1,51 @@
+# Delivers the AI team's committed report files to the CEO's dashboard.
+# Scans every branch for projects/<key>/reports/*.json and reports/*.json and sends each one;
+# the dashboard stores each reportId once, so re-sending is harmless.
+# Needs the repository secret AICOS_AGENT_KEY (Settings → Secrets and variables → Actions).
+name: Deliver team reports
+
+on:
+  push:
+    branches-ignore: [main]
+    paths: ["projects/*/reports/*.json", "reports/*.json"]
+  schedule:
+    - cron: "*/10 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deliver-reports
+  cancel-in-progress: false
+
+jobs:
+  deliver:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Deliver report files from every branch
+        env:
+          AICOS_AGENT_KEY: ${{ secrets.AICOS_AGENT_KEY }}
+        run: |
+          if [ -z "$AICOS_AGENT_KEY" ]; then echo "::error::Repository secret AICOS_AGENT_KEY is not set"; exit 1; fi
+          sent=0; failed=0
+          for ref in $(git for-each-ref --format='%(refname:short)' 'refs/remotes/origin/*' | grep -v '^origin/HEAD$' | grep -v '^origin$'); do
+            for f in $(git ls-tree -r --name-only "$ref" | grep -E '^(projects/[^/]+/)?reports/[^/]+\.json$'); do
+              git show "$ref:$f" > "$RUNNER_TEMP/report.json"
+              if node scripts/aicos-report.mjs "$RUNNER_TEMP/report.json" > /dev/null; then
+                sent=$((sent+1))
+              else
+                failed=$((failed+1)); echo "::warning::Not delivered: $ref:$f"
+              fi
+            done
+          done
+          echo "Reports delivered or already received: $sent. Failed: $failed."
+          [ "$failed" -eq 0 ]

@@ -65,13 +65,13 @@ For each stage: delegate → save outputs to files → have the reviewer (a diff
 
 ## Reporting
 
-After **every** stage, write `company/outbox/<key>-<NNNN>.report.json` following `docs/agent-report.md` and run:
+After **every** stage, write the report to **`projects/<key>/reports/<NNNN>.json`** (format: `docs/agent-report.md`; `reportId` = `<key>-<NNNN>`, unique and never reused), **commit it with the stage's work, and push**. GitHub's *Deliver team reports* workflow sends committed reports to the CEO's dashboard within ~10 minutes — this works even when the session cannot reach the dashboard directly. Then also try an immediate send (harmless if it fails, never a duplicate):
 
 ```bash
-node scripts/aicos-report.mjs company/outbox/<key>-<NNNN>.report.json
+node scripts/aicos-report.mjs projects/<key>/reports/<NNNN>.json || true
 ```
 
-Each stage report contains: a `work.record` per employee who worked (with real `startedAt`/`endedAt`, logs, output, deliverables as GitHub links to the pushed files, `handoff` to the next owner, and `review` by the reviewer), `task.status` updates, and a `message.post` from Sarah summarising progress in the project channel. If the script prints `NO_AGENT_KEY`, show the JSON in a ```json block for the CEO to import, and continue.
+Report files are public like the rest of the repository: no secrets or confidential client material in them. Each stage report contains: a `work.record` per employee who worked (with real `startedAt`/`endedAt`, logs, output, deliverables as GitHub links to the pushed files, `handoff` to the next owner, and `review` by the reviewer), `task.status` updates, and a `message.post` from Sarah summarising progress in the project channel. A failed immediate send is fine — the committed file is delivered by GitHub; never stop the work because of it.
 
 ## Pace and limits
 

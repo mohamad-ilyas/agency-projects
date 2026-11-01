@@ -1,10 +1,12 @@
 # Reporting team work to the dashboard (`aicos.report/v1`)
 
-Every command ends a stage by writing a report file and sending it:
+Every stage ends with a report file **committed in the repository** — `projects/<key>/reports/<NNNN>.json` (or `reports/<name>.json` outside a project) — and pushed. In `agency-projects`, GitHub's *Deliver team reports* workflow sends every committed report to the dashboard within ~10 minutes, so delivery doesn't depend on the session's network. Also try an immediate send:
 
 ```bash
-node scripts/aicos-report.mjs company/outbox/<name>.report.json
+node scripts/aicos-report.mjs projects/<key>/reports/<NNNN>.json || true
 ```
+
+`reportId` must be unique and stable: the dashboard stores each `reportId` once, so re-sending is always safe.
 
 - Exit 0 `SENT` — it is in the CEO's inbox; the dashboard applies it on its next sync.
 - The key comes from `AICOS_AGENT_KEY`, the macOS Keychain item `aicos-agent-key`, or — in Claude Code on the web — a network secret that adds the `X-Aicos-Agent-Key` header outside the session.
