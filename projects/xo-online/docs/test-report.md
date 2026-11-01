@@ -1,7 +1,7 @@
 # xo-online: Test report (EMP-012, 2026-11-01)
 
 **Scope.** Automated acceptance tests for every AC in `docs/spec.md` (US-1..US-12), CI workflow, and one bug fix.
-**Stack.** Vitest 5 + Testing Library + jsdom. Each mounted `<App>` is one "browser" (its own localStorage namespace and memory router). Several apps share one in-process `MemoryBroker` (retained messages, Last Will), so multi-player flows run without a network. Fake timers (`setTimeout/setInterval/Date`; `queueMicrotask` stays real) cover the 15 s offline, 5 s not-found and 10 min lobby-idle thresholds. No sleeps or retries are used to make tests pass.
+**Stack.** Vitest 5 + Testing Library + jsdom. Each mounted `<App>` is one "browser" (its own localStorage namespace and memory router). Several apps share one in-process `MemoryBroker` (retained messages, Last Will), so multi-player flows run without a network. Fake timers (`setTimeout/setInterval/Date`; `queueMicrotask` stays real) cover the 15 s offline, 5 s not-found and 10 min lobby-idle thresholds. No retries are used to make tests pass. Three tests (AC-5.3, AC-6.2, AC-8.1) wait a short real `setTimeout(20)` before asserting that nothing changed; these waits cannot force a pass.
 **Not covered by any automated test:** the live public MQTT broker (R3: this sandbox cannot reach it), real CSS animation playback, and the native share sheet on a device. These need the CEO's preview check plus manual QA (EMP-011).
 
 ## Result summary
