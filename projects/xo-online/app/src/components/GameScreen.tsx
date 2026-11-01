@@ -31,6 +31,8 @@ export function GameScreen({ id, name }: { id: string; name: string }) {
   }, [id])
   useEffect(() => {
     if (!room || status !== 'online' || joinAttempted.current) return
+    // AC-3.4: an expired game shows "Game not found"; joining it would revive it (fix by EMP-012).
+    if (isExpired(room, client.now())) return
     const res = joinRoom(room, { clientId: client.clientId, name, now: client.now() })
     // Only stop retrying once a join succeeded: a locked room can re-open (seat O leaves), and the
     // visitor on the spinner must then take the free seat instead of waiting forever.
