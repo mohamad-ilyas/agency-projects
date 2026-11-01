@@ -1,0 +1,7 @@
+{ "schema": "aicos.report/v1", "reportId": "xo-online-0007", "sentAt": "2026-11-01T22:27:57Z", "source": "claude_code_web",
+  "summary": "xo-online preview published after CEO approval: https://mohamad-ilyas.github.io/agency-projects/xo-online/",
+  "actions": [
+    { "type": "deliverable.record", "title": "XO Online live preview", "deliverableType": "client_deliverable", "location": "https://mohamad-ilyas.github.io/agency-projects/xo-online/", "projectKey": "xo-online", "ownerId": "EMP-003" },
+    { "type": "deliverable.record", "title": "Publish previews run", "deliverableType": "documentation", "location": "https://github.com/mohamad-ilyas/agency-projects/actions/runs/41356781424", "projectKey": "xo-online", "ownerId": "EMP-003" },
+    { "type": "message.post", "kind": "project", "projectKey": "xo-online", "authorId": "EMP-003", "body": "The CEO asked for the working URL, so the Publish previews workflow was started at their request. The CEO approved the github-pages deployment, and run 41356781424 built xo-online from 585b4d1 and deployed it. Live: https://mohamad-ilyas.github.io/agency-projects/xo-online/. Still to do: approve xo-online/preview in the Approval Center, confirm A1–A6, and Amelia's two-device live check (the build session cannot reach github.io or the broker)." }
+  ] }

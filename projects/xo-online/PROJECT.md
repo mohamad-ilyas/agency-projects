@@ -7,7 +7,7 @@
 | Type | Quick app |
 | Branch | project/xo-online |
 | Repo | https://github.com/mohamad-ilyas/agency-projects/tree/project/xo-online/projects/xo-online |
-| Preview | /agency-projects/xo-online/ (published only by the CEO via Actions → Publish previews) |
+| Preview | https://mohamad-ilyas.github.io/agency-projects/xo-online/ (live since 2026-11-01, Publish previews run 41356781424) |
 | Project manager | EMP-003 Sarah Mitchell |
 
 ## Request (CEO)
@@ -48,7 +48,7 @@ Until answered, the spec (xo-online/spec) records these as explicit assumptions 
 | xo-online/build | EMP-008 Emily | spec | EMP-006 | done |
 | xo-online/tests | EMP-012 George | build | EMP-010 | done |
 | xo-online/review | EMP-013 Eleanor | tests | reports to CEO | done — Go with conditions |
-| xo-online/preview (protectedAction: public_release) | EMP-003 Sarah | review | CEO decides | in review — waiting for CEO approval |
+| xo-online/preview (protectedAction: public_release) | EMP-003 Sarah | review | CEO decides | done — CEO approved; published 2026-11-01 (run 41356781424); dashboard approval pending |
 
 Approval gate: xo-online/preview is a public release — prepared by EMP-003 and sent to the CEO Approval Center; not performed without explicit CEO approval.
 
@@ -70,3 +70,8 @@ Approval gate: xo-online/preview is a public release — prepared by EMP-003 and
 4. Approve `xo-online/preview` in the dashboard's Approval Center.
 
 Reports: projects/xo-online/reports/0001.json, 0002.json, 0003.json, 0004.json, 0005.json, 0006.json
+
+## Live preview
+
+- URL: https://mohamad-ilyas.github.io/agency-projects/xo-online/ — published 2026-11-01. The CEO asked for it to be published; the workflow was started for them and the CEO approved the github-pages deployment. Run 41356781424 built xo-online from commit 585b4d1; build and deploy succeeded.
+- Not yet checked: the page loading in a browser (the build session cannot reach github.io) and live online play between two devices (review condition 2, EMP-011).
