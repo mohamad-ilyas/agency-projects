@@ -4,7 +4,9 @@ Client work by the AI Company OS team. **This repository is PUBLIC** (CEO decisi
 everything committed here is visible to anyone. See the rules below before writing anything.
 Dashboard: https://mohamad-ilyas.github.io/ai-company-os/ (source: mohamad-ilyas/ai-company-os).
 
-- Start a client project: `/new-project <request>`. Resume: `/continue-project <key>`. One task: `/task <employee>: <what>`.
+- Start a client project: `/new-project <request>`. Small app or prototype: `/quick-app <request>`.
+  Resume: `/continue-project <key>`. One task: `/task <employee>: <what>`.
+- Previews: only the CEO runs Actions → **Publish previews**; it serves each project at /agency-projects/<key>/.
 - Each client project lives in `projects/<key>/` on branch `project/<key>`; `PROJECT.md` there is its state file.
 - The 13 employees are subagents in `.claude/agents/`. They are generated from the dashboard repository — edit them there
   and re-export (`npm run kit:export -- ../agency-projects` in ai-company-os), not here.

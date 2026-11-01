@@ -57,6 +57,7 @@ For each stage: delegate → save outputs to files → have the reviewer (a diff
    - job `test`: install, typecheck, unit tests;
    - job `android`: `npx expo prebuild --platform android` then `./gradlew assembleRelease` (debug-signed **test build**), upload the APK as an artifact named `<key>-android-test-apk`;
    - job `ios-simulator`: simulator `.app` build on `macos-latest`, uploaded as an artifact (free in a public repository).
+   - For a **web** app instead: follow the build and preview conventions in `.claude/commands/quick-app.md` (Vite `base` from `BASE_PATH`, a `build:preview` script) so the CEO can publish a preview.
    Store-ready signed builds need paid developer accounts: prepare the config, file `approval.request` (`spending`) — do not create accounts.
 7. **QA** (Victoria plan, George automation, Amelia manual): `docs/test-plan.md`, automated tests in the app, `docs/test-report.md` with what was executed and real results. Amelia's manual testing is a reasoned walkthrough of the code and flows unless a device/emulator is actually available — say which.
 8. **Independent review** (Eleanor): `docs/review.md` — claims vs evidence for every acceptance criterion, re-run the tests, findings with severity, Go / Go with conditions / No-go.
