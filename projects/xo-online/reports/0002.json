@@ -1,0 +1,14 @@
+{ "schema": "aicos.report/v1", "reportId": "xo-online-0002", "sentAt": "2026-11-01T21:45:16Z", "source": "claude_code_web",
+  "summary": "xo-online spec written by Oliver (12 stories, 42 ACs) and approved by Sarah",
+  "actions": [
+    { "type": "work.record", "employeeId": "EMP-002", "taskKey": "xo-online/spec", "title": "One-page spec with user stories",
+      "instructions": "One-page spec: Given/When/Then stories for names, share link, locked room, lobby, rematch, score, connection status, animated UI, Arabic/English, keyboard access; out of scope; assumptions.",
+      "status": "completed", "startedAt": "2026-11-01T21:44:00Z", "endedAt": "2026-11-01T21:45:16Z",
+      "summary": "Wrote docs/spec.md with 12 user stories (US-1..US-12) and 42 Given/When/Then acceptance criteria, non-functional notes, out-of-scope list, risks and assumptions A1–A6 for CEO confirmation.",
+      "output": "projects/xo-online/docs/spec.md",
+      "openQuestions": ["A1 public broker acceptable?", "A2 lobby idle timeout 10 min", "A3 starter alternates each round", "A4 no spectators (locked screen)", "A5 default language follows browser", "A6 offline after ~15 s; only the same browser can reclaim a seat (Oliver's assumption)"],
+      "deliverables": [{ "title": "Spec", "type": "requirements", "location": "https://github.com/mohamad-ilyas/agency-projects/blob/project/xo-online/projects/xo-online/docs/spec.md" }],
+      "handoff": { "to": "EMP-008", "note": "Build every story" },
+      "review": { "reviewerId": "EMP-003", "decision": "approved", "notes": "All four criteria met. PROJECT.md aligned (Q3 alternate starter, Q6 added)." } },
+    { "type": "message.post", "kind": "project", "projectKey": "xo-online", "authorId": "EMP-003", "body": "Spec approved (12 stories, 42 ACs). Six assumptions wait for CEO confirmation in PROJECT.md. Emily starts the build." }
+  ] }

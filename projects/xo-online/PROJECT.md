@@ -32,9 +32,10 @@
 
 1. Is relying on a free public broker (no SLA, data visible to anyone) acceptable, or should we request approval for a free-tier hosted backend?
 2. How long should idle games stay listed in the lobby? (Assumed: 10 minutes.)
-3. Who starts the next round in a rematch? (Assumed: loser starts / X alternates.)
+3. Who starts the next round in a rematch? (Assumed: the starting player alternates each round.)
 4. Should spectators be able to watch a locked game? (Assumed: no — they see a locked screen.)
 5. Default language? (Assumed: follow the browser, English fallback.)
+6. When is a player shown offline, and who can reclaim a seat? (Assumed, EMP-002 A6: offline after ~15 s without contact; only the same browser can reclaim a seat.)
 
 Until answered, the spec (xo-online/spec) records these as explicit assumptions for CEO confirmation.
 
@@ -43,8 +44,8 @@ Until answered, the spec (xo-online/spec) records these as explicit assumptions 
 | Task | Owner | Depends on | Reviewer | Status |
 |---|---|---|---|---|
 | xo-online/setup | EMP-003 Sarah | — | — | done |
-| xo-online/spec | EMP-002 Oliver | — | EMP-003 | in progress |
-| xo-online/build | EMP-008 Emily | spec | EMP-006 | todo |
+| xo-online/spec | EMP-002 Oliver | — | EMP-003 | done |
+| xo-online/build | EMP-008 Emily | spec | EMP-006 | in progress |
 | xo-online/tests | EMP-012 George | build | EMP-010 | todo |
 | xo-online/review | EMP-013 Eleanor | tests | reports to CEO | todo |
 | xo-online/preview (protectedAction: public_release) | EMP-003 Sarah | review | CEO decides | todo |
@@ -53,7 +54,7 @@ Approval gate: xo-online/preview is a public release — prepared by EMP-003 and
 
 ## Status
 
-- Set up done; spec in progress.
+- Set up done; spec done (approved by EMP-003, assumptions A1–A6 still await CEO confirmation); build in progress.
 
 ## How the CEO publishes the preview
 
