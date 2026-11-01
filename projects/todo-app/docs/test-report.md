@@ -24,18 +24,18 @@ $ npm ci
 added 110 packages, and audited 111 packages in 4s
 found 0 vulnerabilities
 
-$ npm test            # run 1
+$ npm test            # run 1 (after review fix, see Revision below)
  Test Files  12 passed (12)
       Tests  95 passed (95)
-   Duration  8.55s
+   Duration  8.07s
 $ npm test            # run 2
  Test Files  12 passed (12)
       Tests  95 passed (95)
-   Duration  8.39s
+   Duration  7.99s
 $ npm test            # run 3
  Test Files  12 passed (12)
       Tests  95 passed (95)
-   Duration  8.39s
+   Duration  7.95s
 
 $ npm run build:preview
 > tsc -b && vite build
@@ -104,6 +104,13 @@ Spec note (not a code defect; for EMP-002 Oliver, spec owner): AC-6.2 says "100+
 `Intl.PluralRules`) uses n % 100, so 101 → other but 103 → few ("103 مهام متبقية") and 111 → many ("111 مهمة متبقية").
 The tests assert the CLDR behaviour, which matches the AC's own phrase "all six CLDR plural categories". Suggest
 rewording the shorthand in the spec.
+
+## Revision (review by EMP-010 Victoria)
+
+Low finding fixed: in `a5-overdue.test.tsx` the Arabic task title "متأخرة جداً" contained the badge word "متأخرة",
+so `toHaveTextContent('متأخرة')` on the row could never fail. The title is now "دفع الفاتورة", the `.badge` check is kept,
+and a check was added that the row no longer contains "متأخرة" after completion. Test count unchanged (95);
+re-run 3 times, 95/95 each (output above). The earlier timezone/shuffle runs were done before this fix and were not repeated.
 
 ## CI
 

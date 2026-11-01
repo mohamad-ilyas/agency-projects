@@ -30,13 +30,14 @@ describe('A-5 Overdue', () => {
   })
 
   it('A-5 the overdue label is in Arabic and disappears when the task is completed (ar)', async () => {
-    seedTasks([makeTask({ title: 'متأخرة جداً', due: '2026-02-01' })])
+    seedTasks([makeTask({ title: 'دفع الفاتورة', due: '2026-02-01' })])
     const { user } = renderApp({ lang: 'ar' })
-    expect(rowFor('متأخرة جداً')).toHaveTextContent('متأخرة')
+    expect(rowFor('دفع الفاتورة')).toHaveTextContent('متأخرة')
     expect(screen.getByText('متأخرة', { selector: '.badge' })).toBeInTheDocument()
 
-    await user.click(screen.getByRole('checkbox', { name: 'متأخرة جداً' }))
-    expect(rowFor('متأخرة جداً')).not.toHaveClass('task--overdue')
+    await user.click(screen.getByRole('checkbox', { name: 'دفع الفاتورة' }))
+    expect(rowFor('دفع الفاتورة')).not.toHaveClass('task--overdue')
+    expect(rowFor('دفع الفاتورة')).not.toHaveTextContent('متأخرة')
     expect(screen.queryByText('متأخرة', { selector: '.badge' })).not.toBeInTheDocument()
   })
 })

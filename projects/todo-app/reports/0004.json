@@ -1,0 +1,28 @@
+{ "schema": "aicos.report/v1", "reportId": "todo-app-0004", "sentAt": "2026-11-01T21:06:20Z", "source": "claude_code_web",
+  "summary": "todo-app tests and CI: 95 tests pass, every acceptance criterion covered; approved by Victoria",
+  "actions": [
+    { "type": "work.record", "employeeId": "EMP-012", "taskKey": "todo-app/tests", "title": "Automated tests and CI",
+      "instructions": "Vitest + Testing Library test per acceptance criterion (incl. tech lead's gap list); .github/workflows/todo-app.yml running npm ci, npm test, npm run build:preview; record real output.",
+      "status": "completed", "startedAt": "2026-11-01T21:01:00Z", "endedAt": "2026-11-01T21:06:20Z",
+      "summary": "Added 85 acceptance tests (95 total) across 12 files with AC IDs in test names, covering AC-1.1..AC-9.2 plus overdue highlighting. Created the todo-app CI workflow. No product defects found. Fixed a test assertion that could never fail, as the QA manager asked.",
+      "output": "Tests in projects/todo-app/app/src/test/, CI in .github/workflows/todo-app.yml, report in projects/todo-app/docs/test-report.md. Not covered by automation: real iPhone/Safari, VoiceOver, contrast measurement, rendered CSS, performance.",
+      "logs": [
+        { "at": "2026-11-01T21:08:00Z", "message": "npm ci: added 110 packages, found 0 vulnerabilities" },
+        { "at": "2026-11-01T21:08:00Z", "message": "npm test x3: 12 files passed, 95 tests passed; also 95/95 under 3 timezones and 2 shuffle seeds" },
+        { "at": "2026-11-01T21:08:00Z", "message": "npm run build:preview: built in 571ms" },
+        { "at": "2026-11-01T21:06:20Z", "message": "After the overdue-test fix: npm test x3: 95 passed (95); tsc -b clean" }
+      ],
+      "openQuestions": ["GitHub CI run result not yet confirmed at time of report"],
+      "deliverables": [
+        { "title": "Test report", "type": "document", "location": "https://github.com/mohamad-ilyas/agency-projects/blob/project/todo-app/projects/todo-app/docs/test-report.md" },
+        { "title": "CI workflow", "type": "source_code", "location": "https://github.com/mohamad-ilyas/agency-projects/blob/project/todo-app/.github/workflows/todo-app.yml" }
+      ],
+      "handoff": { "to": "EMP-013", "note": "Ready for independent review" },
+      "review": { "reviewerId": "EMP-010", "decision": "approved", "notes": "Every AC has a meaningful test; CI correct and read-only; report honest. Low: overdue assertion could never fail (fixed). Medium spec issue AC-6.2 plural wording (fixed by Oliver). Visual styling and device checks are manual." } },
+    { "type": "work.record", "employeeId": "EMP-002", "taskKey": "todo-app/spec", "title": "Reword AC-6.2 (Arabic plurals)",
+      "instructions": "Align AC-6.2 with the CLDR Arabic plural rules as requested by EMP-010 and EMP-003.", "status": "completed", "endedAt": "2026-11-01T21:06:20Z",
+      "summary": "AC-6.2 now states the CLDR Arabic rules (zero/one/two/few/many/other) with examples 103 → few and 111 → many.",
+      "output": "projects/todo-app/docs/spec.md AC-6.2",
+      "deliverables": [{ "title": "Spec", "type": "document", "location": "https://github.com/mohamad-ilyas/agency-projects/blob/project/todo-app/projects/todo-app/docs/spec.md" }] },
+    { "type": "message.post", "kind": "project", "projectKey": "todo-app", "authorId": "EMP-003", "body": "Tests approved: 95/95 passing locally, every acceptance criterion covered. Spec AC-6.2 corrected. Eleanor starts the independent review." }
+  ] }
