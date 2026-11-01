@@ -1,0 +1,33 @@
+{
+  "schema": "aicos.report/v1",
+  "reportId": "todo-app-0001",
+  "sentAt": "2026-11-01T20:47:18Z",
+  "source": "claude_code_web",
+  "summary": "todo-app set up: project created with 5 tasks (spec, build, tests, review, preview)",
+  "actions": [
+    { "type": "project.upsert", "key": "todo-app", "name": "Team to-do app", "client": "Internal — team",
+      "description": "Simple bilingual (Arabic RTL / English) to-do web app for the team. React, tasks saved in the browser, no login or server.",
+      "businessRequirements": "Add a task with title and optional due date; mark done; edit; delete; filter All/Active/Done; count of tasks left; Arabic (RTL) + English with a language switch; light and dark mode; works well on iPhone.",
+      "technicalRequirements": "Vite + React + TypeScript; localStorage; static build served at /agency-projects/todo-app/; Vitest + Testing Library; GitHub Actions CI; $0.",
+      "scope": "In: the features above. Out: accounts, sync between devices, server, notifications.",
+      "priority": "medium", "startDate": "2026-11-01", "managerId": "EMP-003",
+      "memberIds": ["EMP-002","EMP-008","EMP-006","EMP-012","EMP-010","EMP-013"],
+      "repoUrl": "https://github.com/mohamad-ilyas/agency-projects/tree/project/todo-app/projects/todo-app", "status": "development" },
+    { "type": "task.upsert", "key": "todo-app/spec", "projectKey": "todo-app", "title": "One-page spec with user stories", "assigneeId": "EMP-002", "priority": "medium", "stage": "client_request",
+      "acceptanceCriteria": ["User stories with Given/When/Then for every requested feature", "Arabic (RTL) + English requirements", "Out-of-scope list", "At most one page"], "expectedOutput": "projects/todo-app/docs/spec.md" },
+    { "type": "task.upsert", "key": "todo-app/build", "projectKey": "todo-app", "title": "Build the web app (Vite + React + TS)", "assigneeId": "EMP-008", "priority": "medium", "stage": "development", "dependsOn": ["todo-app/spec"],
+      "acceptanceCriteria": ["Every spec story implemented", "Keyboard-accessible semantic HTML", "RTL-correct with language switch", "localStorage persistence", "base from BASE_PATH; build:preview script; npm run build:preview passes"], "expectedOutput": "projects/todo-app/app" },
+    { "type": "task.upsert", "key": "todo-app/tests", "projectKey": "todo-app", "title": "Automated tests and CI", "assigneeId": "EMP-012", "priority": "medium", "stage": "quality_assurance", "dependsOn": ["todo-app/build"],
+      "acceptanceCriteria": ["A Vitest + Testing Library test per acceptance criterion", ".github/workflows/todo-app.yml path-filtered, runs npm ci, npm test, npm run build:preview", "Real test output recorded"], "expectedOutput": "Tests in projects/todo-app/app and .github/workflows/todo-app.yml" },
+    { "type": "task.upsert", "key": "todo-app/review", "projectKey": "todo-app", "title": "Independent quality review", "assigneeId": "EMP-013", "priority": "medium", "stage": "independent_review", "dependsOn": ["todo-app/tests"],
+      "acceptanceCriteria": ["Claims vs evidence per acceptance criterion", "Tests and build re-run", "Findings with severity", "Go / Go with conditions / No-go"], "expectedOutput": "projects/todo-app/docs/review.md" },
+    { "type": "task.upsert", "key": "todo-app/preview", "projectKey": "todo-app", "title": "Preview link for the CEO", "assigneeId": "EMP-003", "priority": "medium", "stage": "delivery", "dependsOn": ["todo-app/review"], "protectedAction": "public_release",
+      "acceptanceCriteria": ["Preview prepared, not published", "approval.request filed for the CEO"], "expectedOutput": "https://mohamad-ilyas.github.io/agency-projects/todo-app/ after the CEO runs Publish previews" },
+    { "type": "work.record", "employeeId": "EMP-003", "taskKey": "todo-app/spec", "title": "Project set-up", "instructions": "Create PROJECT.md with the checklist for todo-app", "status": "in_progress", "startedAt": "2026-11-01T20:46:34Z", "endedAt": "2026-11-01T20:47:18Z",
+      "summary": "Created projects/todo-app/PROJECT.md with assumptions, 5 open questions for the CEO, and the task checklist. Handing the spec to Oliver.",
+      "output": "projects/todo-app/PROJECT.md", "openQuestions": ["Default language on first visit?", "Default theme: system or fixed?", "Arabic date digits: Arabic-Indic or Western?", "Task order?", "Highlight overdue tasks?"],
+      "deliverables": [{ "title": "PROJECT.md", "type": "document", "location": "https://github.com/mohamad-ilyas/agency-projects/tree/project/todo-app/projects/todo-app/PROJECT.md" }],
+      "handoff": { "to": "EMP-002", "note": "Write the one-page spec" } },
+    { "type": "message.post", "kind": "project", "projectKey": "todo-app", "authorId": "EMP-003", "body": "Kicked off todo-app (quick app). Branch project/todo-app. Oliver writes the spec next; 5 open questions are recorded as assumptions in PROJECT.md for the CEO to confirm." }
+  ]
+}

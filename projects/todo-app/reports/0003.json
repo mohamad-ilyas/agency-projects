@@ -1,0 +1,19 @@
+{ "schema": "aicos.report/v1", "reportId": "todo-app-0003", "sentAt": "2026-11-01T20:56:04Z", "source": "claude_code_web",
+  "summary": "todo-app built by Emily (all 9 stories), approved by James; build and 10 smoke tests pass",
+  "actions": [
+    { "type": "work.record", "employeeId": "EMP-008", "taskKey": "todo-app/build", "title": "Build the web app (Vite + React + TS)",
+      "instructions": "Implement US-1..US-9 in projects/todo-app/app with Vite + React + TS; RTL + language switch; light/dark; iPhone; localStorage; base from BASE_PATH; build:preview and test scripts.",
+      "status": "completed", "startedAt": "2026-11-01T20:52:00Z", "endedAt": "2026-11-01T20:59:00Z",
+      "summary": "Built the app with pure logic modules (tasks, storage, i18n, theme) and three components. Arabic plural via Intl.PluralRules (CLDR), logical CSS for RTL, persisted language/theme, iPhone safe areas and 44px targets.",
+      "output": "projects/todo-app/app — src/lib/{tasks,storage,i18n,theme}.ts, src/components/{AddTaskForm,FilterBar,TaskItem}.tsx, src/App.tsx, src/index.css, vite.config.ts (base from BASE_PATH).",
+      "logs": [
+        { "at": "2026-11-01T20:58:00Z", "message": "npm install: found 0 vulnerabilities" },
+        { "at": "2026-11-01T20:58:00Z", "message": "npm run build:preview: built in 604ms, exit 0 (JS 232.93 kB, gzip 73.15 kB)" },
+        { "at": "2026-11-01T20:58:00Z", "message": "npm test: 2 files, 10 tests passed" }
+      ],
+      "openQuestions": ["Arabic zero form shows no digit (\"لا توجد مهام متبقية\") — confirm acceptable", "Not tested on a real iPhone/Safari"],
+      "deliverables": [{ "title": "App source", "type": "source_code", "location": "https://github.com/mohamad-ilyas/agency-projects/tree/project/todo-app/projects/todo-app/app" }],
+      "handoff": { "to": "EMP-012", "note": "Write tests per acceptance criterion and the CI workflow" },
+      "review": { "reviewerId": "EMP-006", "decision": "approved", "notes": "All stories met; re-ran npm ci, build:preview (exit 0, base path correct) and npm test (10 passed). Minor: unused languageSwitchLabel; corrupt data overwritten on load (matches AC-9.2); overdue can go stale past midnight; test gaps for delete, theme, storage notices, filter empty states, language detection." } },
+    { "type": "message.post", "kind": "project", "projectKey": "todo-app", "authorId": "EMP-003", "body": "Build approved by James. George now writes acceptance tests and CI, covering the gaps James listed." }
+  ] }

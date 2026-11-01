@@ -1,0 +1,14 @@
+{ "schema": "aicos.report/v1", "reportId": "todo-app-0002", "sentAt": "2026-11-01T20:48:36Z", "source": "claude_code_web",
+  "summary": "todo-app spec written by Oliver and approved by Sarah",
+  "actions": [
+    { "type": "work.record", "employeeId": "EMP-002", "taskKey": "todo-app/spec", "title": "One-page spec with user stories",
+      "instructions": "One-page spec: Given/When/Then stories for every feature, Arabic RTL + English, out of scope; open questions as assumptions.",
+      "status": "completed", "startedAt": "2026-11-01T20:49:00Z", "endedAt": "2026-11-01T20:48:36Z",
+      "summary": "Wrote docs/spec.md with US-1..US-9 (add, complete, edit, delete, filter, tasks-left, language, theme, persistence) and AC-1.1..AC-9.2. Open questions recorded as assumptions A-1..A-5 pending CEO confirmation.",
+      "output": "projects/todo-app/docs/spec.md",
+      "openQuestions": ["Assumptions A-1..A-5 in spec.md need CEO confirmation"],
+      "deliverables": [{ "title": "Spec", "type": "document", "location": "https://github.com/mohamad-ilyas/agency-projects/blob/project/todo-app/projects/todo-app/docs/spec.md" }],
+      "handoff": { "to": "EMP-008", "note": "Build every story; use Intl.PluralRules('ar') for the tasks-left count" },
+      "review": { "reviewerId": "EMP-003", "decision": "approved", "notes": "Meets all criteria. Minor: AC-6.2 simplifies the Arabic plural rule — build must use Intl.PluralRules('ar'); tests should check 101, 103, 111." } },
+    { "type": "message.post", "kind": "project", "projectKey": "todo-app", "authorId": "EMP-003", "body": "Spec approved (US-1..US-9). Emily starts the build." }
+  ] }
