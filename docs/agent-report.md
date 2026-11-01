@@ -7,6 +7,7 @@ node scripts/aicos-report.mjs company/outbox/<name>.report.json
 ```
 
 - Exit 0 `SENT` — it is in the CEO's inbox; the dashboard applies it on its next sync.
+- The key comes from `AICOS_AGENT_KEY`, the macOS Keychain item `aicos-agent-key`, or — in Claude Code on the web — a network secret that adds the `X-Aicos-Agent-Key` header outside the session.
 - Exit 3 `NO_AGENT_KEY` — not sent. Show the CEO the report JSON in a ```json block and tell them to paste it into **Execution Center → Import team report**.
 - Exit 1 — invalid or rejected. Fix and resend; never claim it was delivered.
 

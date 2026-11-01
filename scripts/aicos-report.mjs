@@ -4,8 +4,10 @@
 //
 //   node scripts/aicos-report.mjs <report.json>
 //
-// The agent key comes from AICOS_AGENT_KEY, or on macOS from the Keychain item
-// "aicos-agent-key". It is never written to disk. The dashboard validates every
+// The agent key comes from (1) AICOS_AGENT_KEY, (2) the macOS Keychain item
+// "aicos-agent-key", or (3) in Claude Code on the web, a *network secret* that
+// Anthropic's proxy adds as the X-Aicos-Agent-Key header after the request leaves
+// the session — the key never enters the cloud machine. It is never written to disk. The dashboard validates every
 // report fully before applying it; this script only does basic checks.
 import { execFileSync } from "node:child_process";
 import { readFileSync, existsSync } from "node:fs";
@@ -50,14 +52,10 @@ function agentKey() {
 }
 
 const key = agentKey();
-if (!key) {
-  console.error(
-    "NO_AGENT_KEY: no agent key on this machine, so the report was NOT sent.\n" +
-      "Fallback: show the CEO the report JSON to paste into Execution Center → Import team report.\n" +
-      "Setup: dashboard → Settings → AI team channel → Create agent key.",
-  );
-  process.exit(3);
-}
+const NO_KEY =
+  "NO_AGENT_KEY: the dashboard did not accept an agent key from this session, so the report was NOT sent.\n" +
+  "Fallback: show the CEO the report JSON to paste into Execution Center → Import team report.\n" +
+  "Setup: dashboard → Settings → AI team channel → Create agent key (Mac: Keychain; Claude Code on the web: network secret).";
 
 const here = dirname(fileURLToPath(import.meta.url));
 const configPath = [join(process.cwd(), "aicos.config.json"), join(here, "..", "aicos.config.json")].find(existsSync);
@@ -70,9 +68,14 @@ const config = JSON.parse(readFileSync(configPath, "utf8"));
 const res = await fetch(`${config.supabaseUrl}/rest/v1/rpc/submit_agent_report`, {
   method: "POST",
   headers: { apikey: config.supabasePublishableKey, "Content-Type": "application/json" },
-  body: JSON.stringify({ p_key: key, p_payload: report }),
+  // Without a local key, send none: in Claude Code on the web the proxy adds it as a header.
+  body: JSON.stringify(key ? { p_key: key, p_payload: report } : { p_payload: report }),
 });
 const body = await res.text();
+if (!res.ok && body.includes("invalid agent key")) {
+  console.error(key ? "REJECTED: the agent key was not accepted (revoked or replaced?).\n" + NO_KEY : NO_KEY);
+  process.exit(3);
+}
 if (!res.ok) {
   console.error(`SEND FAILED (${res.status}): ${body.slice(0, 500)}`);
   process.exit(1);
