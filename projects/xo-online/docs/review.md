@@ -1,6 +1,112 @@
 # xo-online: Independent review (EMP-013 Eleanor Whitfield, 2026-11-01)
 
-**Recommendation: Go with conditions, for publishing a PREVIEW only (not production).** The CEO makes the decision.
+**Verdict:** Go with conditions
+
+Current status, from the re-review on 2026-11-02 of branch `project/xo-online` at `7491dcc`, for a new production release to GitHub Pages (https://mohamad-ilyas.github.io/agency-projects/xo-online/). The COO (EMP-001) makes the release decision. The original 2026-11-01 assessment follows that section and is kept unchanged except for its heading line.
+
+## Re-review 2026-11-02
+
+Independence: I did not contribute to the fixes, the tech-lead review, the content edits, the test report or the `release.yml` change.
+
+**Scope.** I read `git diff 47ad342 HEAD`, covering 22 files: `lib/{room,client,bidi,i18n}.ts`, `components/{GameScreen,Lobby,Announcer,Isolated,NameForm}.tsx`, `App.tsx`, `index.css`, both new `review-fixes` test files, the changed us2, us7, us8, us12 and journey tests, `docs/test-report.md`, `release.json` and `.github/workflows/release.yml`. I did not change any app code, I did not commit, and I deleted `dist/` after the build.
+
+### Commands I ran (real output, 2026-11-02 19:24–19:25 UTC, sandbox Linux, Node v22.23.4, npm 10.9.9, in `projects/xo-online/app`)
+
+```
+$ npm ci
+found 0 vulnerabilities
+
+$ npm test
+ Test Files  18 passed (18)
+      Tests  107 passed (107)
+   Start at  19:24:50
+   Duration  15.37s (tests 55%, environment 34%, setup 6%, import 3%, transform 1%, worker 1%)
+(exit 0)
+
+$ npx tsc -b
+(no output, exit 0)
+
+$ BASE_PATH=/agency-projects/xo-online/ npm run build:preview
+✓ 41 modules transformed.
+dist/index.html                     1.76 kB │ gzip:  0.84 kB
+dist/assets/index-NnQHA5Cb.css     18.26 kB │ gzip:  4.98 kB
+dist/assets/index-D1y5XJiv.js     264.28 kB │ gzip: 83.08 kB
+dist/assets/mqtt.esm-BZmp_r8e.js  329.99 kB │ gzip: 98.79 kB
+✓ built in 591ms
+(exit 0)
+$ rm -rf dist
+
+$ npx oxlint              -> no output, exit 0
+$ npm audit --omit=dev    -> found 0 vulnerabilities
+```
+
+- `dist/index.html` references only `/agency-projects/xo-online/assets/...` and `/agency-projects/xo-online/favicon.svg`.
+- The only `wss://` URL in the bundle is `wss://broker.hivemq.com:8884/mqtt`.
+- The build hashes match the ones in George's test report.
+- The diff adds no secrets, keys or personal data.
+
+**GitHub evidence (checked with `gh run list` / `gh run view`, 2026-11-02).**
+- The "xo-online CI" runs succeeded on 47ba2e5, 75c25d3, dda7125 and 7491dcc (run 41509559196).
+- The previous Release run, 41502430554, merged and deployed successfully. Its deploy job then failed in "Report the final delivery to the CEO's dashboard" with `line 9: syntax error near unexpected token '('`. This is the bug that the `release.yml` change fixes.
+- That same run pushed a merge that added `.github/workflows/xo-online.yml` to `main`. The bot's push of workflow-file changes therefore works in practice.
+
+### `release.yml` change (`git diff 47ad342 HEAD -- .github/workflows/release.yml`)
+
+| Check | Evidence | Result |
+|---|---|---|
+| YAML is valid; the heredoc sits inside the `run: \|` block scalar | `yaml.safe_load` parses the file. The step's `run` text, extracted from the parsed YAML, has `JS` alone on line 12 at column 0 once the 10-space block indent is removed | Pass |
+| Heredoc is quoted, so the shell expands nothing | `<<'JS'`: `${key}`, `${sha...}`, backticks and the apostrophe in "COO's" reach Node literally. The script contains no `${{`, so Actions does not interpolate it | Pass |
+| argv slice | `node file.mjs key url sha` gives `process.argv.slice(2)` = `[key, url, sha]`. The old `node -e` form correctly used `slice(1)` | Pass |
+| ESM import | `.mjs` file with `import { writeFileSync } from "node:fs"`. CI runs Node 24 | Pass |
+| Behaviour | I extracted the step and ran it with `bash --noprofile --norc -eo pipefail`, `RELEASED=xo-online`, a fake SHA and the reporter replaced by `echo`, so nothing was sent. Exit 0. `delivery.json` had `reportId` `release-xo-online-7491dcc`, location `https://mohamad-ilyas.github.io/agency-projects/xo-online/`, and the description text including the apostrophe | Pass |
+| Old step on `main` | The same harness on `origin/main`'s step gives `line 9: syntax error near unexpected token '('`, exit 2. This reproduces the failure in run 41502430554 | Confirms the bug |
+
+### Status of the original findings
+
+| ID | Sev. | Status | Evidence (code + tests) |
+|---|---|---|---|
+| F-01 | Medium | **Open** (post-deploy, as the COO accepted on 2026-11-02) | There is still no run against the live broker. The COO's approval in 2d6c8fc deferred this check to after deploy (EMP-011). |
+| F-02 | Medium | **Resolved** (residual accepted, see below) | `parseRoom` rejects these cases. It rejects `version` that is not a safe integer or is outside 1…1e9. It rejects timestamps or `lastSeen` that are negative or more than 10 min ahead of the receiver's clock. It rejects counters above 1e6, `scoredRound > round`, and boards where the X and O counts differ by more than 1. `plausibleVersion` rejects jumps of more than 1000 versions, and a seated player re-publishes its own state when that happens. `openGames` skips future-dated rooms and caps the list at 50. `XoClient` holds at most 300 rooms. 8 `F-02 …` tests pass. **Residual:** a deliberate attacker can still overwrite a game by sending `version + ≤1000`. This is anti-cheat, which the spec puts out of scope, and A1 is accepted. |
+| F-03 | Medium | **Resolved** | `watchLobby` no longer clears rooms. Only `leaveRoom` → `clearRoom` does, by a seated player. Test `F-03 a viewer whose clock is 25 h ahead…` passes and asserts that no clearing payload is published. |
+| F-04 | Medium | **Accepted** | The CEO instructed that A1–A6 proceed as documented defaults (`release.json` at 2d6c8fc, condition 1). |
+| F-05 | Low | **Resolved** | `touchWaitingRoom` keeps the same version and a newer `updatedAt`, and only for the lone host. A join bumps the version, so it always wins. `keepWaitingRoomFresh` runs every 2 min while the host is online. 2 lib tests and 1 UI test pass. The AC-7.2 behaviour changed, and the us7 test now unmounts the host (see N-04). |
+| F-06 | Low | **Resolved** (minor residual N-03) | `normalizeName` strips C0/C1 controls, ALM, LRM/RLM, LRE–RLO, LRI–PDI and BOM, both on input and in `parseRoom`. Names in sentences are wrapped in FSI…PDI and rendered as `<bdi>` through `Isolated`: turn heading, result, rematch, waiting-for, live region and lobby title. 5 `F-06 …` tests pass. |
+| F-07 | Low | **Open** | George reports a Chromium reduced-motion check (longest animation 0.2 s). The script and its output are not in the repo, so I could not verify it. No check on a real device or real OS setting has been recorded. |
+| F-08 | Low | **Partially resolved; open for PROJECT.md** | The test report now states 42 ACs, 36 covered and 6 partial (matching this review) and lists the CI run IDs. I confirmed those run IDs with `gh`. The `PROJECT.md` "Status" section is still stale: it says "Preview: not published…", although `xo-online` was released in 47ad342. |
+| F-09 | Low | **Resolved** | A privacy note (EN/AR) appears on the name screen and in the footer. `goOffline` (pagehide) clears this client's retained room heartbeats. Tests `F-09 …` (2) pass. **Residual (accepted):** one retained Will message per client (`presence/_/<clientId>`) still stays on the broker. It is overwritten in place, so it does not grow per game. |
+| F-10 | Low | **Open** | This belongs in the F-01 two-device check. No code change was expected. |
+
+**Counts:** 5 resolved (F-02, F-03, F-05, F-06, F-09), 1 accepted (F-04), 4 open (F-01, F-07, F-08 partial, F-10). No open finding is High or Critical.
+
+### New findings
+
+| ID | Severity | Finding and evidence | Expected change | Owner |
+|---|---|---|---|---|
+| N-01 | Low | **Silent stall when a peer's clock is more than 10 min behind.** `parseRoom` rejects any state whose `createdAt`/`updatedAt`/`lastSeen` is more than `MAX_FUTURE_SKEW_MS` (10 min) ahead of the *receiver's* clock. A receiver whose clock is more than 10 min behind ignores every update from its opponent: a joiner sees "Game not found", and a seated player sees moves stop arriving. No message tells the player why. This is my analysis of the code; I did not run it on two devices. Devices synced by NTP are unaffected. | Accept for this release (James chose 10 min on purpose). Optionally, later: show a "check your device clock" hint when a valid-shape state is rejected only for skew. Add a skewed-clock case to the F-01 manual check. | EMP-008 (later), EMP-011 |
+| N-02 | Low | **The delivery report will fail once more for this release.** Scheduled runs use the workflow on `main` at trigger time. `main` (47ad342) still has the broken step, so the run that merges this release will deploy Pages and then fail at "Report the final delivery…", as run 41502430554 did. The fix takes effect from the next Release run after this merge. There is no user impact. | The COO expects a red deploy job on this release run and records the delivery on the dashboard by hand (`node scripts/aicos-report.mjs`). Check that the following Release run's report step succeeds. | EMP-001 |
+| N-03 | Low | **Two strings still interpolate names without isolation.** These are the lobby join button `aria-label={t.joinAria(host.name)}` (`Lobby.tsx:107`) and the `ShareBox` `hostName` share text. Bidi controls are already stripped, so only cosmetic ordering of mixed-script names is affected. | Wrap with `isolate()` in a later change. | EMP-008 |
+| N-04 | Low | **AC-7.2 meaning changed without a recorded product decision.** "Idle" now means "host gone", where it used to mean "no room update for 10 min". The us7 AC-7.2 test was adapted: it now unmounts the host before advancing the clock. I consider the new behaviour better and the adapted test sound. My original F-05 asked for a product decision, and none is recorded. | EMP-002 or the COO notes the AC-7.2 interpretation in `docs/spec.md` or `PROJECT.md`. | EMP-002 / EMP-001 |
+
+### Unverified items (re-review)
+
+- Live public-broker play, latency, Last Will, reconnect, cleared retained topics, and real two-device clock skew (F-01, F-10, N-01).
+- George's Chromium local-mode and 360 px check: claim only, with no script or artifact in the repo.
+- The release-run report step on GitHub itself: I validated it locally only, and N-02 means the first real execution will be the release after this one.
+
+### Release recommendation (production release of `7491dcc`)
+
+**Go with conditions.** The decision belongs to the COO.
+
+1. **N-02:** expect this release run's deploy job to fail at the delivery-report step after Pages has deployed. Confirm that the site is live, then report the delivery by hand.
+2. **F-01 / F-10 / N-01:** EMP-011 runs the live two-device check right after deploy, as already agreed in the 2d6c8fc conditions, and adds a near-simultaneous join and a device clock set more than 10 min behind. Record dates, devices and results. Until then, live play is "unverified", not "passed".
+3. Non-blocking follow-ups: F-08 (`PROJECT.md` status), N-03, N-04, and F-07 (real-device reduced-motion check).
+
+Rollback: revert the release merge commit on `main`, as stated in `release.json`.
+
+---
+
+
+**Original assessment (2026-11-01): Go with conditions, for publishing a PREVIEW only (not production).** The CEO makes the decision.
 I found no High-severity defect. The game logic and UI behave as specified when run against the in-memory broker. My re-run gave 88/88 tests passing and a clean preview build. I found no secrets or personal data, and the $0 rule holds.
 The main risks are on the live public broker. Nothing here has been run against it, and it is open to anyone. Those risks are acceptable for a CEO-only preview. They must be resolved or accepted before any production release.
 
