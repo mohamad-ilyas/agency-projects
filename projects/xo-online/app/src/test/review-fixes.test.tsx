@@ -57,7 +57,7 @@ describe('review fixes (UI)', () => {
   it('F-09 the name screen and the footer say a free public server is used (EN and AR)', async () => {
     const broker = new MemoryBroker()
     const a = mount(broker, 'rf-d')
-    expect(a.q.getByTestId('privacy-note')).toHaveTextContent(/free public server.*Do not enter personal information/)
+    expect(a.q.getByTestId('privacy-note')).toHaveTextContent(/free public server.*Do not enter (any )?personal information/)
     expect(a.q.queryByTestId('privacy-footer')).toBeNull()
     await a.user.click(a.q.getByRole('button', { name: 'Language: العربية' }))
     expect(a.q.getByTestId('privacy-note')).toHaveTextContent(/خادم عام مجاني.*لا تُدخل أي معلومات شخصية/)
