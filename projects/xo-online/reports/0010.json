@@ -1,0 +1,7 @@
+{ "schema": "aicos.report/v1", "reportId": "xo-online-0010", "sentAt": "2026-11-02T19:37:05Z", "source": "claude_code_web",
+  "summary": "xo-online follow-up release is live (Release run 41510588091)",
+  "actions": [
+    { "type": "deliverable.record", "title": "xo-online — live release (follow-up)", "deliverableType": "client_deliverable", "location": "https://mohamad-ilyas.github.io/agency-projects/xo-online/", "projectKey": "xo-online", "ownerId": "EMP-001" },
+    { "type": "deliverable.record", "title": "Release run", "deliverableType": "documentation", "location": "https://github.com/mohamad-ilyas/agency-projects/actions/runs/41510588091", "projectKey": "xo-online", "ownerId": "EMP-001" },
+    { "type": "message.post", "kind": "direct", "authorId": "EMP-001", "body": "**xo-online is live:** https://mohamad-ilyas.github.io/agency-projects/xo-online/\n\nFollow-up release merged into main (cc8eba7) and deployed at 19:32 UTC by Release run 41510588091, after tests and build were re-run by GitHub. The run's last step (this delivery note) failed for the known reason, now fixed on main, so I am reporting it by hand. Next: a live two-device check by Amelia; please test on two devices too." }
+  ] }

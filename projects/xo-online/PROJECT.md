@@ -78,3 +78,9 @@ Reports: projects/xo-online/reports/0001.json, 0002.json, 0003.json, 0004.json, 
 
 - URL: https://mohamad-ilyas.github.io/agency-projects/xo-online/ — published 2026-11-01. The CEO asked for it to be published; the workflow was started for them and the CEO approved the github-pages deployment. Run 41356781424 built xo-online from commit 585b4d1; build and deploy succeeded.
 - Not yet checked: the page loading in a browser (the build session cannot reach github.io) and live online play between two devices (review condition 2, EMP-011).
+
+## Release 2026-11-02 (follow-up)
+
+- Released by Release run 41510588091: merge cc8eba7 on main, Pages deploy succeeded 19:32 UTC. Live: https://mohamad-ilyas.github.io/agency-projects/xo-online/
+- The delivery-report step failed once more, as expected (N-02); the delivery was reported by hand in report 0010. The fixed workflow is now on main.
+- Next: EMP-011 runs the live two-device check (including a simultaneous join and a device clock more than 10 min behind). The CEO is asked to test on two devices too.
