@@ -24,8 +24,12 @@ export const NAME_MAX = 20
 export const LOBBY_REFRESH_MS = 2 * 60 * 1000
 /** F-02: at most this many open games are shown in the lobby (newest first). */
 export const LOBBY_MAX = 50
-/** F-02: timestamps more than this far in the future (local clock) are rejected as spoofed. */
-export const MAX_FUTURE_SKEW_MS = 2 * 60 * 1000
+/**
+ * F-02: timestamps more than this far in the future (local clock) are rejected as spoofed. Generous on purpose:
+ * desktop clocks drifting a few minutes are common, and a rejected state from an honest peer stalls the game.
+ * A spoofed lobby entry can therefore stay listed for at most LOBBY_IDLE_MS + this.
+ */
+export const MAX_FUTURE_SKEW_MS = 10 * 60 * 1000
 /** F-02: absolute cap on `version` (far below 2^53, so `version + 1` always increases). */
 export const VERSION_MAX = 1_000_000_000
 /** F-02: an incoming state may not jump further than this past the version we already hold. */

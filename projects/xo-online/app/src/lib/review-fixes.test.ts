@@ -48,7 +48,14 @@ describe('F-02 bounded parsing of untrusted room state', () => {
     expect(parse({ ...room(), version: 1.5 })).toBeNull()
   })
 
-  it('F-02 timestamps more than ~2 minutes in the future, negative or non-finite are rejected', () => {
+  it('F-02 accepts honest peers whose clock is a few minutes ahead (create, move, lastSeen)', () => {
+    const ahead = NOW + 5 * 60_000
+    const r = room()
+    expect(MAX_FUTURE_SKEW_MS).toBeGreaterThanOrEqual(5 * 60_000)
+    expect(parse({ ...r, createdAt: ahead, updatedAt: ahead, players: [{ ...r.players[0], lastSeen: ahead }, null] })).not.toBeNull()
+  })
+
+  it('F-02 timestamps more than MAX_FUTURE_SKEW_MS in the future, negative or non-finite are rejected', () => {
     expect(parse({ ...room(), updatedAt: NOW + MAX_FUTURE_SKEW_MS })).not.toBeNull()
     expect(parse({ ...room(), updatedAt: NOW + MAX_FUTURE_SKEW_MS + 1 })).toBeNull()
     expect(parse({ ...room(), createdAt: NOW + 24 * 3600_000 })).toBeNull()
@@ -79,7 +86,7 @@ describe('F-02 bounded parsing of untrusted room state', () => {
     const list = openGames(many, NOW)
     expect(list).toHaveLength(LOBBY_MAX)
     expect(list[0].id).toBe('r000000')
-    const future = { ...room('future01'), updatedAt: NOW + 10 * 60_000, createdAt: NOW + 10 * 60_000 }
+    const future = { ...room('future01'), updatedAt: NOW + MAX_FUTURE_SKEW_MS + 1, createdAt: NOW + MAX_FUTURE_SKEW_MS + 1 }
     expect(openGames([future], NOW)).toEqual([])
   })
 
