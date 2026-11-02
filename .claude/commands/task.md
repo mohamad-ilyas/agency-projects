@@ -3,7 +3,7 @@ description: Give one task to one AI employee and report the result to the CEO's
 argument-hint: <employee name, role, or slug>: <what to do> [in <project key>]
 ---
 
-The CEO's request: $ARGUMENTS
+The CEO's request (via Charlotte, COO): $ARGUMENTS
 
 1. **Pick the employee.** Match the name, role, or slug against `.claude/agents/*.md` (e.g. "Henry", "UI/UX", "uiux-designer"). If none is named, choose the employee whose responsibilities fit and say who you chose. If the project key is given (`in cedar-app`), read `projects/<key>/PROJECT.md` for context.
 2. **Rules.** The rules in `.claude/commands/new-project.md` apply: $0, protected actions go to the CEO, client code only in `agency-projects` (public — codenames, no confidential material), honesty about what was run, git branch `project/<key>` for project work (or `task/<short-name>` otherwise), never push to `main`.
@@ -12,6 +12,6 @@ The CEO's request: $ARGUMENTS
 5. **Report.** Write the report per `docs/agent-report.md` to `projects/<key>/reports/task-<short-name>.json` (with a project key) or `reports/task-<short-name>.json` (without), commit, and push — GitHub delivers it to the dashboard within ~10 minutes:
    - with a project key: a `task.upsert` (key `<project>/<short-name>`, assignee = the employee) and a `work.record` for it;
    - without one: just the `work.record`.
-   Do **not** add a `review` — the CEO reviews single tasks in the dashboard (Execution Center → the record → Approve / Request changes).
+   Add a `review` by the employee's manager (or, for design, Alexander EMP-015; for text, Edward EMP-014). Merges and releases of the result follow the Release process (Charlotte decides).
    Also try an immediate send: `node scripts/aicos-report.mjs <file> || true` (a failure is fine; never a duplicate).
-6. **Tell the CEO** in a few lines what the employee produced and that it is waiting for review in the dashboard.
+6. **Charlotte (COO) tells the CEO** in a few lines what was produced and where to see it. Only she addresses the CEO.

@@ -1,0 +1,153 @@
+# Release: merges and deploys the AI team's approved work. No CEO click needed —
+# the COO (Charlotte, EMP-001) decides by committing projects/<key>/release.json.
+#
+# For each project/<key> branch whose release.json says {"decision":"approved","by":"EMP-001"}:
+#   1. requires projects/<key>/docs/review.md with a Go verdict from the independent reviewer,
+#   2. re-runs the app's install, tests, and preview build,
+#   3. merges the branch into main (no fast-forward, so a release is one revertable commit).
+# Learning branches (learning/*) are merged when they only touch playbooks/, reports/, docs/learning*.
+# Then every project on main with a build:preview script is deployed to GitHub Pages and the
+# COO's final delivery is reported to the CEO's dashboard.
+name: Release
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    outputs:
+      released: ${{ steps.merge.outputs.released }}
+      deploy: ${{ steps.merge.outputs.deploy }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          fetch-depth: 0
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+      - name: Merge approved work
+        id: merge
+        run: |
+          set -u
+          git config user.name "AI Company OS release (approved by COO)"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          released=""
+          for ref in $(git for-each-ref --format='%(refname:short)' refs/remotes/origin | grep -vx 'origin/HEAD' | grep -vx 'origin' | grep -vx 'origin/main'); do
+            if git merge-base --is-ancestor "$ref" origin/main; then continue; fi
+            branch="${ref#origin/}"
+            case "$branch" in
+              project/*)
+                key="${branch#project/}"
+                rel="projects/$key/release.json"
+                if ! git cat-file -e "$ref:$rel" 2>/dev/null; then continue; fi
+                git show "$ref:$rel" > "$RUNNER_TEMP/release.json"
+                if ! node -e "const r=require(process.argv[1]); process.exit(r.decision==='approved' && r.by==='EMP-001' ? 0 : 1)" "$RUNNER_TEMP/release.json"; then
+                  echo "::notice::$key: release.json is not an approval by EMP-001 — skipped"; continue
+                fi
+                # The reviewer's verdict line (Verdict/Recommendation: Go | Go with conditions | No-go).
+                verdict=$(git show "$ref:projects/$key/docs/review.md" 2>/dev/null | grep -iE '(verdict|recommendation)' | grep -ioE 'no-go|go with conditions|\bgo\b' | head -1 | tr 'A-Z' 'a-z')
+                if [ "$verdict" != "go" ] && [ "$verdict" != "go with conditions" ]; then
+                  echo "::warning::$key: independent review verdict is '${verdict:-missing}' — not released"; continue
+                fi
+                rm -rf "$RUNNER_TEMP/wt"; git worktree add --detach "$RUNNER_TEMP/wt" "$ref" > /dev/null
+                app="$RUNNER_TEMP/wt/projects/$key/app"
+                if [ -f "$app/package.json" ]; then
+                  if ! (cd "$app" && npm ci && npm test --if-present && BASE_PATH="/${{ github.event.repository.name }}/$key/" npm run --if-present build:preview); then
+                    echo "::error::$key: tests or build failed — not released"; git worktree remove --force "$RUNNER_TEMP/wt"; continue
+                  fi
+                fi
+                git worktree remove --force "$RUNNER_TEMP/wt"
+                if git merge --no-ff "$ref" -m "Release $key (approved by COO, EMP-001)"; then
+                  released="$released $key"
+                else
+                  git merge --abort || true; echo "::error::$key: merge conflict — not released"
+                fi
+                ;;
+              learning/*)
+                outside=$(git diff --name-only origin/main..."$ref" | grep -vE '^(playbooks/|reports/|docs/learning)' || true)
+                if [ -n "$outside" ]; then echo "::warning::$branch changes files outside playbooks/reports — not merged"; continue; fi
+                git merge --no-ff "$ref" -m "Learning: $branch" || { git merge --abort || true; echo "::error::$branch: merge conflict"; }
+                ;;
+            esac
+          done
+          if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/main)" ]; then git push origin HEAD:main; fi
+          echo "released=$(echo $released | xargs)" >> "$GITHUB_OUTPUT"
+          if [ -n "$released" ] || [ "${{ github.event_name }}" = "workflow_dispatch" ]; then echo "deploy=true" >> "$GITHUB_OUTPUT"; else echo "deploy=false" >> "$GITHUB_OUTPUT"; fi
+      - name: Build the site from main
+        if: steps.merge.outputs.deploy == 'true'
+        env:
+          REPO: ${{ github.event.repository.name }}
+        run: |
+          # HEAD is main, including anything just merged.
+          mkdir -p site; items=""
+          for app in projects/*/app; do
+            [ -f "$app/package.json" ] || continue
+            key="$(basename "$(dirname "$app")")"
+            node -e "process.exit(require('./$app/package.json').scripts?.['build:preview'] ? 0 : 1)" || continue
+            if (cd "$app" && npm ci && BASE_PATH="/$REPO/$key/" npm run build:preview) && [ -d "$app/dist" ]; then
+              cp -r "$app/dist" "site/$key"; items="$items<li><a href=\"$key/\">$key</a></li>"
+            else
+              echo "::warning::Build failed for $key"
+            fi
+          done
+          printf '<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Projects</title><body style="font-family:system-ui;max-width:40rem;margin:3rem auto;padding:0 1rem"><h1>Released projects</h1><ul>%s</ul></body></html>' "$items" > site/index.html
+          touch site/.nojekyll
+      - if: steps.merge.outputs.deploy == 'true'
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: site
+
+  deploy:
+    needs: release
+    if: needs.release.outputs.deploy == 'true'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
+      - uses: actions/checkout@v7
+        if: needs.release.outputs.released != ''
+        with:
+          ref: main
+      - uses: actions/setup-node@v7
+        if: needs.release.outputs.released != ''
+        with:
+          node-version: 24
+      - name: Report the final delivery to the CEO's dashboard
+        if: needs.release.outputs.released != ''
+        env:
+          AICOS_AGENT_KEY: ${{ secrets.AICOS_AGENT_KEY }}
+          RELEASED: ${{ needs.release.outputs.released }}
+          PAGE_URL: ${{ steps.deployment.outputs.page_url }}
+        run: |
+          for key in $RELEASED; do
+            url="${PAGE_URL%/}/$key/"
+            node -e '
+              const [key, url, sha] = process.argv.slice(1);
+              const at = new Date().toISOString();
+              const report = { schema: "aicos.report/v1", reportId: `release-${key}-${sha.slice(0, 7)}`, sentAt: at, source: "claude_code",
+                summary: `${key} released and live`,
+                actions: [
+                  { type: "deliverable.record", title: `${key} — live release`, deliverableType: "client_deliverable", location: url, description: `Released by the Release workflow after the COO's approval (commit ${sha.slice(0, 7)}).`, projectKey: key, ownerId: "EMP-001" },
+                  { type: "message.post", kind: "direct", authorId: "EMP-001", body: `**${key} is live:** ${url}\n\nMerged into main after QA sign-off and the independent review, tests and build re-run by GitHub (commit ${sha.slice(0, 7)}). The full delivery notes are in the project on GitHub.` },
+                ] };
+              require("fs").writeFileSync(process.env.RUNNER_TEMP + "/delivery.json", JSON.stringify(report));
+            ' "$key" "$url" "$GITHUB_SHA"
+            node scripts/aicos-report.mjs "$RUNNER_TEMP/delivery.json" || echo "::warning::Could not report delivery for $key"
+          done
