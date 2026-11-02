@@ -49,18 +49,21 @@ Until answered, the spec (xo-online/spec) records these as explicit assumptions 
 | xo-online/tests | EMP-012 George | build | EMP-010 | done |
 | xo-online/review | EMP-013 Eleanor | tests | reports to CEO | done — Go with conditions |
 | xo-online/preview (protectedAction: public_release) | EMP-003 Sarah | review | CEO decides | done — CEO approved; published 2026-11-01 (run 41356781424); dashboard approval pending |
+| xo-online/release (protectedAction: public_release) | EMP-001 Charlotte | review, tests | EMP-013 Eleanor (re-review) | approved 2026-11-02T19:29Z at c93b7b4 (Go with conditions); deploys on the next scheduled Release run; live two-device check pending (EMP-011) |
 
 Approval gate: xo-online/preview is a public release — prepared by EMP-003 and sent to the CEO Approval Center; not performed without explicit CEO approval.
 
 ## Status
 
-- Spec, build, tests and independent review: done. Preview: not published. It is waiting for CEO approval (approval.request `public_release` filed in report 0006).
-- Review verdict (`docs/review.md`): **Go with conditions**:
-  1. The CEO confirms or amends assumptions A1–A6 — at least A1 (free public broker; open lobby that anyone can read and write).
-  2. After publishing, EMP-011 runs a two-device live-broker check and a reduced-motion check, recording dates and devices. Live online play is unverified until then.
-  3. EMP-012 corrects the test-report figures (it says 48 ACs, the spec has 42; the partial list and CI statement are out of date). Non-blocking.
-- Follow-ups (EMP-008): F-02 bound version/timestamps in `parseRoom` and cap lobby size; F-03 stop a fast client clock from deleting live games; F-06 bidi-isolate player names; F-09 privacy wording must say the broker is public.
-- Test evidence: 88/88 tests passed locally (EMP-012 George; re-run by EMP-013 Eleanor). GitHub CI "xo-online CI" runs 41355320188 and 41356126723 succeeded.
+- **v1 live** at https://mohamad-ilyas.github.io/agency-projects/xo-online/ since 2026-11-01 (preview, Publish previews run 41356781424) and released on `main` 2026-11-02 (COO approval 18:37:56Z, Release run 41502430554: merge and Pages deploy succeeded; only the dashboard report step failed).
+- **Follow-up release approved 2026-11-02T19:29Z by EMP-001** at `c93b7b4` (`release.json`). Re-review verdict (`docs/review.md`, EMP-013): **Go with conditions**. Evidence: 107/107 tests (18 files), clean `build:preview` and 0 audit findings, re-run by EMP-013 and EMP-001; xo-online CI green (41508386626, 41508718219, 41509016902, 41509559196, 41510237526); tech-lead (EMP-006) and content (EMP-014) approvals. The scheduled Release workflow (every 15 min) merges and deploys it.
+- **Resolved in this release:** F-02 (bounded versions/timestamps/counters, lobby cap 50, 10 min clock-skew tolerance), F-03 (only seated players clear rooms), F-05 (host heartbeat keeps a waiting game listed), F-06 (bidi-isolated names, control characters stripped), F-09 (EN/AR privacy note; retained room heartbeats cleared on leave), F-08 test-report figures and this status section, and the Release workflow delivery-report bug (takes effect from the run after this one). F-04: A1–A6 proceed as documented defaults (CEO instruction 2026-11-02).
+- **Product decision N-04 (EMP-001, 2026-11-02):** AC-7.2 "idle" now means "host gone" (host offline / no heartbeat for 10 min), not "no room update for 10 min". Accepted as the intended behaviour.
+- **Remaining:**
+  1. Live two-device check on the public broker (F-01, F-10, N-01) — EMP-011, right after deploy: two devices on two networks; create, join, full round, rematch, locked third device, tab close (offline in ~15 s), airplane-mode reconnect, near-simultaneous join, one device clock >10 min behind. Live online play stays **unverified** until recorded.
+  2. N-02 — this Release run is expected to end red at "Report the final delivery" after Pages deploys; EMP-001 confirms the site and reports the delivery by hand, then checks the next run's report step is green.
+  3. Low, non-blocking: N-01 (no hint when a peer clock is >10 min behind; EMP-008 later), N-03 (two name strings not isolated; EMP-008), F-07 (real-device reduced-motion check; EMP-011), F-10 (seat race, part of item 1).
+- Rollback: revert the release merge commit on `main`.
 
 ## How the CEO publishes the preview
 
