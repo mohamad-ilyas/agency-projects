@@ -1,8 +1,10 @@
 import { useEnv, useI18n, useLobbyRooms, useNow, useStatus } from '../context'
+import { isolate } from '../lib/bidi'
 import { relativeTime } from '../lib/i18n'
 import { newRoomId } from '../lib/ids'
 import { createRoom, openGames } from '../lib/room'
 import { gameHash } from '../lib/router'
+import { Isolated } from './Isolated'
 
 export function Lobby({ name, onChangeName }: { name: string; onChangeName: () => void }) {
   const { t, lang } = useI18n()
@@ -90,7 +92,7 @@ export function Lobby({ name, onChangeName }: { name: string; onChangeName: () =
                   </span>
                   <div className="game-item__info">
                     <p className="game-item__title">
-                      <bdi>{t.hostedBy(host.name)}</bdi>
+                      <Isolated text={t.hostedBy(isolate(host.name))} />
                       {mine && <span className="tag">{t.yourGame}</span>}
                     </p>
                     <p className="game-item__meta">

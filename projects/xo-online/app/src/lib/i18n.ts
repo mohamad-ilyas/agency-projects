@@ -14,6 +14,8 @@ export interface Messages {
   // Name
   nameHeading: string
   nameIntro: string
+  /** F-09: names and moves pass through a free public server. */
+  privacyNote: string
   nameLabel: string
   namePlaceholder: string
   nameHint: string
@@ -91,6 +93,8 @@ const en: Messages = {
   statusAria: (s) => `Connection: ${s}`,
   nameHeading: 'What should we call you?',
   nameIntro: 'Your name is shown to your opponent and in the lobby.',
+  privacyNote:
+    'Games run through a free public server, so names and moves can be seen by others. Do not enter personal information.',
   nameLabel: 'Your name',
   namePlaceholder: 'e.g. Sam',
   nameHint: '1 to 20 characters.',
@@ -166,6 +170,7 @@ const ar: Messages = {
   statusAria: (s) => `الاتصال: ${s}`,
   nameHeading: 'ما الاسم الذي تريد أن نناديك به؟',
   nameIntro: 'يظهر اسمك لخصمك وفي قائمة الألعاب.',
+  privacyNote: 'تمر الألعاب عبر خادم عام مجاني، لذا يمكن للآخرين رؤية الأسماء والحركات. لا تُدخل أي معلومات شخصية.',
   nameLabel: 'اسمك',
   namePlaceholder: 'مثال: سامي',
   nameHint: 'من 1 إلى 20 حرفًا.',

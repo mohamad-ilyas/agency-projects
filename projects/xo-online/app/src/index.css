@@ -233,6 +233,13 @@ h1 {
   color: var(--muted);
 }
 
+.footer__privacy {
+  max-inline-size: 40rem;
+  margin-inline: auto;
+  margin-block-start: 0.25rem;
+  font-size: 0.8rem;
+}
+
 /* ---------- Surfaces ---------- */
 .card {
   position: relative;

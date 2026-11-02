@@ -3,7 +3,7 @@ import { act, waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { detectLang, MESSAGES } from '../lib/i18n'
 import { MemoryBroker } from '../lib/transport'
-import { createGame, enterName, move, mount, playDrawXStarts, startGame } from './helpers'
+import { createGame, enterName, move, mount, playDrawXStarts, startGame, sentence } from './helpers'
 
 const LATIN = /[A-Za-z]/
 
@@ -73,7 +73,7 @@ describe('US-12 Language and accessibility', () => {
     await enterName(a, 'Bob', 'اسمك', 'متابعة')
     // Lobby in Arabic.
     const list = await a.q.findByTestId('lobby-list')
-    expect(within(list).getByText('لعبة Alice')).toBeInTheDocument()
+    expect(within(list).getByText(sentence('لعبة Alice'))).toBeInTheDocument()
     expect(latinLeftovers(a.host)).toEqual([])
     // Game screen in Arabic.
     await a.user.click(within(list).getByRole('button', { name: 'الانضمام إلى لعبة Alice' }))

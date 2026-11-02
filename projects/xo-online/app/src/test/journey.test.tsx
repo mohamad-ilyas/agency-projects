@@ -5,6 +5,7 @@ import { describe, expect, it } from 'vitest'
 import App from '../App'
 import { createMemoryRouter } from '../lib/router'
 import { MemoryBroker, MemoryTransport } from '../lib/transport'
+import { sentence } from './helpers'
 
 function mount(broker: MemoryBroker, ns: string, hash = '#/') {
   const transport = new MemoryTransport(broker)
@@ -64,7 +65,7 @@ describe('XO journey', () => {
     const guest = mount(broker, 'guest')
     await enterName(guest, 'Bob')
     const list = await guest.q.findByTestId('lobby-list')
-    expect(within(list).getByText('Alice’s game')).toBeInTheDocument()
+    expect(within(list).getByText(sentence('Alice’s game'))).toBeInTheDocument()
     await guest.user.click(within(list).getByRole('button', { name: 'Join Alice’s game' }))
 
     await waitFor(() => expect(guest.q.getByTestId('turn')).toHaveTextContent('Alice’s turn'))

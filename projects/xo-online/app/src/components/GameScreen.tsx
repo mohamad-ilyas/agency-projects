@@ -1,9 +1,11 @@
 import { useEffect, useRef, useState } from 'react'
 import { useAnnounce, useEnv, useI18n, usePresence, useRoom, useStatus } from '../context'
+import { isolate } from '../lib/bidi'
 import type { Mark } from '../lib/game'
 import { isExpired, joinRoom, leaveRoom, moveRoom, playerFor, rematchVote, seatOf, type Room } from '../lib/room'
 import { Board } from './Board'
 import { Confetti } from './Confetti'
+import { Isolated } from './Isolated'
 import { MarkIcon } from './Marks'
 import { MessageScreen } from './MessageScreen'
 import { PlayerCard } from './PlayerCard'
@@ -81,6 +83,10 @@ function SeatedGame({ room, mySeat }: { room: Room; mySeat: Mark }) {
   // Heartbeat while seated (presence, AC-9.1).
   useEffect(() => client.startHeartbeat(room.id), [client, room.id])
 
+  // F-05: while waiting alone, keep the room fresh in the lobby (the host is online, so it is not idle).
+  const waitingAlone = room.status === 'waiting' && !opponent
+  useEffect(() => (waitingAlone ? client.keepWaitingRoomFresh(room.id) : undefined), [client, room.id, waitingAlone])
+
   // Live announcements (AC-12.5).
   const prev = useRef<{ key: string; opp: string | null; oppOnline: boolean | null } | null>(null)
   useEffect(() => {
@@ -89,16 +95,16 @@ function SeatedGame({ room, mySeat }: { room: Room; mySeat: Mark }) {
     prev.current = { key, opp: opponent?.clientId ?? null, oppOnline: opponentOnline }
     const msgs: string[] = []
     if (p && p.opp && !opponent) msgs.push(t.opponentLeft)
-    if (opponent && (!p || p.opp !== opponent.clientId) && p) msgs.push(t.opponentJoined(opponent.name))
+    if (opponent && (!p || p.opp !== opponent.clientId) && p) msgs.push(t.opponentJoined(isolate(opponent.name)))
     if (opponent && p && p.opp === opponent.clientId && p.oppOnline !== opponentOnline && p.oppOnline !== null) {
-      msgs.push(opponentOnline ? t.opponentBack(opponent.name) : t.opponentOffline(opponent.name))
+      msgs.push(opponentOnline ? t.opponentBack(isolate(opponent.name)) : t.opponentOffline(isolate(opponent.name)))
     }
     if (!p || p.key !== key) {
       if (room.status === 'finished' && room.result) {
         if (room.result.kind === 'draw') msgs.push(t.draw)
-        else msgs.push(room.result.mark === mySeat ? t.youWin : t.winnerIs(playerFor(room, room.result.mark)?.name ?? ''))
+        else msgs.push(room.result.mark === mySeat ? t.youWin : t.winnerIs(isolate(playerFor(room, room.result.mark)?.name ?? '')))
       } else if (room.status === 'playing' && opponent) {
-        msgs.push(room.turn === mySeat ? t.yourTurn : t.theirTurn(opponent.name))
+        msgs.push(room.turn === mySeat ? t.yourTurn : t.theirTurn(isolate(opponent.name)))
       } else if (room.status === 'waiting') {
         msgs.push(t.waitingTitle)
       }
@@ -136,7 +142,7 @@ function SeatedGame({ room, mySeat }: { room: Room; mySeat: Mark }) {
   const oppVote = mySeat === 'X' ? room.rematch.o : room.rematch.x
 
   let turnText = ''
-  if (room.status === 'playing' && opponent) turnText = myTurn ? t.yourTurn : t.theirTurn(opponent.name)
+  if (room.status === 'playing' && opponent) turnText = myTurn ? t.yourTurn : t.theirTurn(isolate(opponent.name))
 
   return (
     <div className="game enter" data-testid="game" data-seat={mySeat}>
@@ -194,7 +200,7 @@ function SeatedGame({ room, mySeat }: { room: Room; mySeat: Mark }) {
                 <>
                   <MarkIcon mark={room.turn} className="turn__mark" />
                   <span key={turnText} className="turn__text">
-                    {turnText}
+                    <Isolated text={turnText} />
                   </span>
                 </>
               ) : (
@@ -207,13 +213,15 @@ function SeatedGame({ room, mySeat }: { room: Room; mySeat: Mark }) {
             <div className={`result ${iWon ? 'result--win' : ''}`} data-testid="result">
               {iWon && <Confetti />}
               <p className="result__title">
-                {result.kind === 'draw' ? t.draw : iWon ? t.youWin : t.winnerIs(playerFor(room, result.mark)?.name ?? '')}
+                <Isolated
+                  text={result.kind === 'draw' ? t.draw : iWon ? t.youWin : t.winnerIs(isolate(playerFor(room, result.mark)?.name ?? ''))}
+                />
               </p>
-              {oppVote && !myVote && opponent && <p className="muted">{t.wantsRematch(opponent.name)}</p>}
+              {oppVote && !myVote && opponent && <p className="muted"><Isolated text={t.wantsRematch(isolate(opponent.name))} /></p>}
               {myVote ? (
                 <p className="waiting-for" data-testid="waiting-rematch">
                   <span className="dots" aria-hidden="true" />
-                  {t.waitingFor(opponent?.name ?? '')}
+                  <Isolated text={t.waitingFor(isolate(opponent?.name ?? ''))} />
                 </p>
               ) : (
                 <button type="button" className="btn btn--primary btn--lg" onClick={playAgain} disabled={!online}>

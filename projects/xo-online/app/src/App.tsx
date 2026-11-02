@@ -133,6 +133,11 @@ function Shell() {
       </main>
       <footer className="footer">
         <p>{t.tagline}</p>
+        {screenKey !== 'name' && (
+          <p className="footer__privacy" data-testid="privacy-footer">
+            {t.privacyNote}
+          </p>
+        )}
       </footer>
     </div>
   )

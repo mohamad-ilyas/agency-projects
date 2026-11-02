@@ -20,6 +20,18 @@ export const LOBBY_IDLE_MS = 10 * 60 * 1000
 /** Games idle longer than this are treated as expired ("Game not found", AC-3.4). */
 export const ROOM_EXPIRE_MS = 24 * 60 * 60 * 1000
 export const NAME_MAX = 20
+/** F-05: a waiting host refreshes `updatedAt` this often so an online host stays listed beyond LOBBY_IDLE_MS. */
+export const LOBBY_REFRESH_MS = 2 * 60 * 1000
+/** F-02: at most this many open games are shown in the lobby (newest first). */
+export const LOBBY_MAX = 50
+/** F-02: timestamps more than this far in the future (local clock) are rejected as spoofed. */
+export const MAX_FUTURE_SKEW_MS = 2 * 60 * 1000
+/** F-02: absolute cap on `version` (far below 2^53, so `version + 1` always increases). */
+export const VERSION_MAX = 1_000_000_000
+/** F-02: an incoming state may not jump further than this past the version we already hold. */
+export const MAX_VERSION_JUMP = 1000
+/** F-02: sanity caps for counters (a real match never gets near them). */
+const COUNTER_MAX = 1_000_000
 
 export interface Player {
   clientId: string
@@ -169,20 +181,37 @@ export function leaveRoom(room: Room, actor: Actor): { ok: true; room: Room | nu
   }
 }
 
+/**
+ * F-05: keep a waiting room fresh in the lobby while its host is online. Same version (so it never beats a
+ * concurrent join, which bumps the version), newer updatedAt. Returns null when nothing should be published.
+ */
+export function touchWaitingRoom(room: Room, actor: Actor): Room | null {
+  if (room.status !== 'waiting' || room.players[1] || room.players[0]?.clientId !== actor.clientId) return null
+  if (actor.now <= room.updatedAt) return null
+  return { ...room, updatedAt: actor.now, writer: actor.clientId }
+}
+
+/** F-02: is `incoming` a plausible successor of the state we hold (no absurd version jump)? */
+export function plausibleVersion(local: Room | undefined, incoming: Room): boolean {
+  return !local || incoming.version <= local.version + MAX_VERSION_JUMP
+}
+
 export function isExpired(room: Room, now: number): boolean {
   return now - room.updatedAt > ROOM_EXPIRE_MS
 }
 
-/** Lobby: waiting games with one free seat, active within the last 10 minutes, newest first. */
-export function openGames(rooms: Iterable<Room>, now: number): Room[] {
+/** Lobby: waiting games with one free seat, active within the last 10 minutes, newest first, at most `limit`. */
+export function openGames(rooms: Iterable<Room>, now: number, limit = LOBBY_MAX): Room[] {
   const list: Room[] = []
   for (const r of rooms) {
     if (r.status !== 'waiting') continue
     if (!r.players[0] || r.players[1]) continue
     if (now - r.updatedAt > LOBBY_IDLE_MS) continue
+    // F-02: a timestamp far in the future would keep a room listed forever.
+    if (r.updatedAt - now > MAX_FUTURE_SKEW_MS || r.createdAt - now > MAX_FUTURE_SKEW_MS) continue
     list.push(r)
   }
-  return list.sort((a, b) => b.createdAt - a.createdAt || a.id.localeCompare(b.id))
+  return list.sort((a, b) => b.createdAt - a.createdAt || a.id.localeCompare(b.id)).slice(0, Math.max(0, limit))
 }
 
 /** >0 if a wins over b. Higher version wins; ties broken by updatedAt, then writer, then content. */
@@ -209,8 +238,16 @@ const isMark = (v: unknown): v is Mark => v === 'X' || v === 'O'
 export const ID_RE = /^[a-z0-9]{6,16}$/
 const CLIENT_RE = /^[A-Za-z0-9_-]{6,40}$/
 
+/**
+ * F-06: bidi controls (LRM/RLM/ALM, LRE..RLO, LRI..PDI) and other control characters are removed so a name
+ * cannot reorder the text around it. Whitespace (tabs, newlines) collapses to single spaces first.
+ */
+// Control characters are matched on purpose (they are stripped).
+// oxlint-disable-next-line no-control-regex
+const UNSAFE_NAME_CHARS = /[\u0000-\u001f\u007f-\u009f\u061c\u200e\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g
+
 export function normalizeName(raw: string): string {
-  return raw.trim().replace(/\s+/g, ' ')
+  return raw.replace(/\s+/g, ' ').replace(UNSAFE_NAME_CHARS, '').replace(/\s+/g, ' ').trim()
 }
 
 export function nameLength(name: string): number {
@@ -224,7 +261,7 @@ function parsePlayer(v: unknown): Player | null | undefined {
   if (typeof v.name !== 'string') return undefined
   const name = normalizeName(v.name)
   if (nameLength(name) < 1 || nameLength(name) > NAME_MAX) return undefined
-  if (!isNum(v.lastSeen)) return undefined
+  if (!isNum(v.lastSeen) || v.lastSeen < 0) return undefined
   return { clientId: v.clientId, name, lastSeen: v.lastSeen }
 }
 
@@ -237,8 +274,14 @@ function parseOutcome(v: unknown): Outcome | null | undefined {
   return { kind: 'win', mark: v.mark, line: v.line.slice() as unknown as Line }
 }
 
-/** Returns a valid Room or null. Malformed or inconsistent payloads are ignored. */
-export function parseRoom(raw: unknown, expectedId?: string): Room | null {
+const isCount = (v: unknown, min = 0): v is number => isInt(v, min) && (v as number) <= COUNTER_MAX
+
+/**
+ * Returns a valid Room or null. Malformed, inconsistent or out-of-range payloads are ignored.
+ * `now` (local clock) bounds timestamps: anything more than MAX_FUTURE_SKEW_MS ahead is rejected (F-02).
+ */
+export function parseRoom(raw: unknown, expectedId?: string, opts: { now?: number } = {}): Room | null {
+  const now = opts.now ?? Date.now()
   let v: unknown = raw
   if (typeof raw === 'string') {
     if (raw.length === 0 || raw.length > 8192) return null
@@ -257,13 +300,21 @@ export function parseRoom(raw: unknown, expectedId?: string): Room | null {
   if (p0 === undefined || p1 === undefined) return null
   if (!Array.isArray(v.board) || v.board.length !== 9 || !v.board.every((c) => c === null || isMark(c))) return null
   if (!isMark(v.turn) || !isMark(v.starter)) return null
-  if (!isInt(v.round, 1) || !isInt(v.scoredRound) || !isInt(v.version, 1)) return null
-  if (!isObj(v.scores) || !isInt(v.scores.x) || !isInt(v.scores.o) || !isInt(v.scores.draws)) return null
+  if (!isCount(v.round, 1) || !isCount(v.scoredRound) || v.scoredRound > v.round) return null
+  if (!Number.isSafeInteger(v.version) || (v.version as number) < 1 || (v.version as number) > VERSION_MAX) return null
+  if (!isObj(v.scores) || !isCount(v.scores.x) || !isCount(v.scores.o) || !isCount(v.scores.draws)) return null
+  // Marks alternate, so the counts of X and O on the board differ by at most one.
+  const xs = (v.board as Cell[]).filter((c) => c === 'X').length
+  const os = (v.board as Cell[]).filter((c) => c === 'O').length
+  if (Math.abs(xs - os) > 1) return null
   if (!isObj(v.rematch) || typeof v.rematch.x !== 'boolean' || typeof v.rematch.o !== 'boolean') return null
   if (v.status !== 'waiting' && v.status !== 'playing' && v.status !== 'finished') return null
   const result = parseOutcome(v.result)
   if (result === undefined) return null
-  if (!isNum(v.createdAt) || !isNum(v.updatedAt)) return null
+  if (!isNum(v.createdAt) || !isNum(v.updatedAt) || v.createdAt < 0 || v.updatedAt < 0) return null
+  const latest = now + MAX_FUTURE_SKEW_MS
+  if (v.createdAt > latest || v.updatedAt > latest) return null
+  if ((p0 && p0.lastSeen > latest) || (p1 && p1.lastSeen > latest)) return null
   if (typeof v.writer !== 'string' || v.writer.length > 40) return null
   if (!p0) return null
   if (p1 && p1.clientId === p0.clientId) return null
@@ -282,7 +333,7 @@ export function parseRoom(raw: unknown, expectedId?: string): Room | null {
     result,
     createdAt: v.createdAt,
     updatedAt: v.updatedAt,
-    version: v.version,
+    version: v.version as number,
     writer: v.writer,
   }
 }

@@ -28,6 +28,9 @@ export function NameForm({ initial, onSave, onCancel }: { initial: string; onSav
       </div>
       <h1 id={`${id}-h`}>{t.nameHeading}</h1>
       <p className="muted">{t.nameIntro}</p>
+      <p className="notice" data-testid="privacy-note">
+        {t.privacyNote}
+      </p>
       <form className="name-form" onSubmit={submit} noValidate>
         <label htmlFor={`${id}-in`} className="field-label">
           {t.nameLabel}
