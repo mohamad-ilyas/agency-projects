@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#f4f3ff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#0b0b16" media="(prefers-color-scheme: dark)" />
+    <meta name="description" content="XO Online / إكس أو أونلاين: play tic-tac-toe with a friend using a shared link." />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <title>XO Online · إكس أو</title>
+    <script>
+      // Pre-paint: apply saved language before React renders (key must match src/lib/prefs.ts).
+      (function () {
+        var lang = null;
+        try { lang = localStorage.getItem('aicos-xo:v1:lang'); } catch (e) {}
+        if (lang !== 'ar' && lang !== 'en') {
+          var langs = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || ''];
+          lang = 'en';
+          for (var i = 0; i < langs.length; i++) {
+            var c = String(langs[i]).toLowerCase();
+            if (c.indexOf('ar') === 0) { lang = 'ar'; break; }
+            if (c.indexOf('en') === 0) { lang = 'en'; break; }
+          }
+        }
+        document.documentElement.lang = lang;
+        document.documentElement.dir = lang === 'ar' ? 'rtl' : 'ltr';
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

@@ -1,0 +1,23 @@
+{ "schema": "aicos.report/v1", "reportId": "xo-online-0004", "sentAt": "2026-11-01T22:15:26Z", "source": "claude_code_web",
+  "summary": "xo-online tests by George: 88 tests covering all 48 ACs (5 partial), CI green; approved by Victoria",
+  "actions": [
+    { "type": "work.record", "employeeId": "EMP-012", "taskKey": "xo-online/tests", "title": "Automated tests and CI",
+      "instructions": "A Vitest + Testing Library test per acceptance criterion, regression test for the build-review fix, CI workflow, test report with real output.",
+      "status": "completed", "startedAt": "2026-11-01T22:02:00Z", "endedAt": "2026-11-01T22:14:00Z",
+      "summary": "61 new tests (88 total) across 12 story files; every AC has a named test (43 full, 5 partial: AC-2.3, 9.1, 10.2, 11.1, 11.2). Found and fixed bug B1: opening a link to an expired game revived it instead of showing Game not found.",
+      "output": "projects/xo-online/app/src/test/us1..us12-*.test.tsx, helpers.tsx; .github/workflows/xo-online.yml; projects/xo-online/docs/test-report.md",
+      "logs": [
+        { "at": "2026-11-01T22:13:00Z", "message": "npm test: Test Files 16 passed (16), Tests 88 passed (88), 3 consecutive runs" },
+        { "at": "2026-11-01T22:13:00Z", "message": "npm run build:preview: built in 550ms" },
+        { "at": "2026-11-01T22:14:51Z", "message": "GitHub CI xo-online CI run 41356126723: success" }
+      ],
+      "errors": [],
+      "openQuestions": ["Live MQTT, native share sheet and real animations need a manual check on the preview", "Lobby hides a still-waiting host after 10 min (last update, not presence) — confirm intent"],
+      "deliverables": [
+        { "title": "Test report", "type": "test_report", "location": "https://github.com/mohamad-ilyas/agency-projects/blob/project/xo-online/projects/xo-online/docs/test-report.md" },
+        { "title": "CI run", "type": "test_report", "location": "https://github.com/mohamad-ilyas/agency-projects/actions/runs/41356126723" }
+      ],
+      "handoff": { "to": "EMP-013", "note": "Independent review" },
+      "review": { "reviewerId": "EMP-010", "decision": "approved", "notes": "Spot-checked 14 tests, none mislabelled. Weak: AC-6.2, AC-10.3, AC-9.1 isolation. Report wording on real waits corrected. Low defect O4: names in sentences not bidi-isolated." } },
+    { "type": "message.post", "kind": "project", "projectKey": "xo-online", "authorId": "EMP-003", "body": "Tests approved by Victoria: 88 passing, CI green (run 41356126723). Eleanor starts the independent review." }
+  ] }

@@ -1,0 +1,6 @@
+{ "schema": "aicos.report/v1", "reportId": "xo-online-0008", "sentAt": "2026-11-02T18:37:56Z", "source": "claude_code_web",
+  "summary": "xo-online release approved by the COO; Release workflow restores the live URL",
+  "actions": [
+    { "type": "approval.decide", "taskKey": "xo-online/release", "decision": "approved", "by": "EMP-001", "note": "Go with conditions (docs/review.md); 88/88 tests and preview build re-run 2026-11-02; CI run 41357268546 green. Conditions: A1-A6 proceed as defaults on the CEO's instruction to finish ASAP; live two-device check by EMP-011 right after deploy; test-report figures non-blocking. Rollback: revert the release merge commit." },
+    { "type": "message.post", "kind": "project", "projectKey": "xo-online", "authorId": "EMP-001", "body": "Root cause of the broken URL: the new Release workflow (run 41491661441, 2026-11-02 17:29 UTC) rebuilt GitHub Pages from main only, and xo-online had not been merged, so it was removed from the site. Release approved now; the Release workflow merges, re-runs tests and build, and redeploys to https://mohamad-ilyas.github.io/agency-projects/xo-online/." }
+  ] }

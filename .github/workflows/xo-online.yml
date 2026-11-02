@@ -1,0 +1,32 @@
+# CI for the xo-online project: unit + per-AC acceptance tests (Vitest/jsdom, in-memory broker; no live MQTT) and the preview build.
+# Free tier: one ubuntu job, typically a few minutes. No secrets are used.
+name: xo-online CI
+
+on:
+  push:
+    branches: [project/xo-online]
+    paths: ['projects/xo-online/**', '.github/workflows/xo-online.yml']
+  pull_request:
+    paths: ['projects/xo-online/**', '.github/workflows/xo-online.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: projects/xo-online/app
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: projects/xo-online/app/package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build:preview
