@@ -9,10 +9,17 @@
 // Anthropic's proxy adds as the X-Aicos-Agent-Key header after the request leaves
 // the session — the key never enters the cloud machine. It is never written to disk. The dashboard validates every
 // report fully before applying it; this script only does basic checks.
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawnSync } from "node:child_process";
 import { readFileSync, existsSync } from "node:fs";
 import { dirname, join } from "node:path";
 import { fileURLToPath } from "node:url";
+
+// Node's fetch ignores HTTPS_PROXY unless NODE_USE_ENV_PROXY=1. Cloud sessions (Claude Code on the web)
+// reach the internet only through that proxy, so re-run once with it enabled.
+if ((process.env.HTTPS_PROXY || process.env.https_proxy) && !process.env.NODE_USE_ENV_PROXY) {
+  const r = spawnSync(process.execPath, process.argv.slice(1), { stdio: "inherit", env: { ...process.env, NODE_USE_ENV_PROXY: "1", NODE_NO_WARNINGS: "1" } });
+  process.exit(r.status ?? 1);
+}
 
 const path = process.argv[2];
 if (!path) {
@@ -65,12 +72,24 @@ if (!configPath) {
 }
 const config = JSON.parse(readFileSync(configPath, "utf8"));
 
-const res = await fetch(`${config.supabaseUrl}/rest/v1/rpc/submit_agent_report`, {
+let res;
+try {
+  res = await fetch(`${config.supabaseUrl}/rest/v1/rpc/submit_agent_report`, {
   method: "POST",
   headers: { apikey: config.supabasePublishableKey, "Content-Type": "application/json" },
   // Without a local key, send none: in Claude Code on the web the proxy adds it as a header.
   body: JSON.stringify(key ? { p_key: key, p_payload: report } : { p_payload: report }),
-});
+  });
+} catch (e) {
+  const cause = e.cause?.cause?.message || e.cause?.message || e.message;
+  const host = new URL(config.supabaseUrl).host;
+  console.error(
+    `NETWORK: could not reach the dashboard (${host}): ${cause}\n` +
+      `In Claude Code on the web, add ${host} to the environment's Allowed domains (Network access) and set the agent key as a network secret.\n` +
+      "The committed report file is still delivered by GitHub's Deliver team reports workflow.",
+  );
+  process.exit(4);
+}
 const body = await res.text();
 if (!res.ok && body.includes("invalid agent key")) {
   console.error(key ? "REJECTED: the agent key was not accepted (revoked or replaced?).\n" + NO_KEY : NO_KEY);
