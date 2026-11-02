@@ -4,7 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { topics } from '../lib/client'
 import { createRoom, joinRoom, LOBBY_IDLE_MS, openGames } from '../lib/room'
 import { MemoryBroker } from '../lib/transport'
-import { advance, createGame, enterName, mount, press, settle, startGame, typeName, useFakeClock } from './helpers'
+import { advance, createGame, enterName, mount, press, settle, startGame, typeName, useFakeClock, sentence } from './helpers'
 
 afterEach(() => {
   vi.useRealTimers()
@@ -94,7 +94,7 @@ describe('US-7 Lobby', () => {
     await settle()
     await typeName(host, 'Alice')
     await press(host.q.getAllByRole('button', { name: /Create game/ })[0])
-    expect(within(viewer.q.getByTestId('lobby-list')).getByText('Alice’s game')).toBeInTheDocument()
+    expect(within(viewer.q.getByTestId('lobby-list')).getByText(sentence('Alice’s game'))).toBeInTheDocument()
 
     // Filled → disappears.
     const id = /#\/game\/(\w+)$/.exec((host.q.getByTestId('share-link') as HTMLInputElement).value)![1]
@@ -108,9 +108,11 @@ describe('US-7 Lobby', () => {
     await settle()
     await typeName(host2, 'Hana')
     await press(host2.q.getAllByRole('button', { name: /Create game/ })[0])
-    expect(within(viewer.q.getByTestId('lobby-list')).getByText('Hana’s game')).toBeInTheDocument()
+    expect(within(viewer.q.getByTestId('lobby-list')).getByText(sentence('Hana’s game'))).toBeInTheDocument()
+    // F-05: a game is idle once its host is gone (an online waiting host keeps refreshing it), so the host leaves.
+    host2.unmount()
     await advance(LOBBY_IDLE_MS - 30_000)
-    expect(within(viewer.q.getByTestId('lobby-list')).getByText('Hana’s game')).toBeInTheDocument()
+    expect(within(viewer.q.getByTestId('lobby-list')).getByText(sentence('Hana’s game'))).toBeInTheDocument()
     await advance(60_000)
     expect(viewer.q.getByTestId('lobby-empty')).toBeInTheDocument()
   })

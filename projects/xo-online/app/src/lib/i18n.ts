@@ -14,6 +14,8 @@ export interface Messages {
   // Name
   nameHeading: string
   nameIntro: string
+  /** F-09: names and moves pass through a free public server. */
+  privacyNote: string
   nameLabel: string
   namePlaceholder: string
   nameHint: string
@@ -91,6 +93,8 @@ const en: Messages = {
   statusAria: (s) => `Connection: ${s}`,
   nameHeading: 'What should we call you?',
   nameIntro: 'Your name is shown to your opponent and in the lobby.',
+  privacyNote:
+    'Games run through a free public server, so your name and moves are visible to others. Do not enter any personal information.',
   nameLabel: 'Your name',
   namePlaceholder: 'e.g. Sam',
   nameHint: '1 to 20 characters.',
@@ -166,6 +170,7 @@ const ar: Messages = {
   statusAria: (s) => `الاتصال: ${s}`,
   nameHeading: 'ما الاسم الذي تريد أن نناديك به؟',
   nameIntro: 'يظهر اسمك لخصمك وفي قائمة الألعاب.',
+  privacyNote: 'تمر الألعاب عبر خادم عام مجاني، لذا يظهر اسمك وحركاتك للآخرين. لا تُدخل أي معلومات شخصية.',
   nameLabel: 'اسمك',
   namePlaceholder: 'مثال: سامي',
   nameHint: 'من 1 إلى 20 حرفًا.',
@@ -189,7 +194,7 @@ const ar: Messages = {
   hostedBy: (n) => `لعبة ${n}`,
   created: (r) => `أُنشئت ${r}`,
   lastScore: (x, o, d) => `آخر مباراة ${x}–${o}، تعادل ${d}`,
-  offlineNote: 'أنت غير متصل. ستتحدث القائمة عند عودة الاتصال.',
+  offlineNote: 'أنت غير متصل. ستُحدَّث القائمة عند عودة الاتصال.',
   loadingGame: 'جارٍ تحميل اللعبة…',
   notFoundTitle: 'اللعبة غير موجودة',
   notFoundBody: 'هذه اللعبة غير موجودة أو انتهت صلاحيتها.',
@@ -226,7 +231,7 @@ const ar: Messages = {
   opponentJoined: (n) => `انضم ${n}. يبدأ X أولًا.`,
   opponentLeft: 'غادر خصمك اللعبة.',
   opponentOffline: (n) => `${n} غير متصل.`,
-  opponentBack: (n) => `عاد ${n} إلى الاتصال.`,
+  opponentBack: (n) => `${n} متصل مجددًا.`,
   movesDisabledOffline: 'أنت غير متصل. الحركات متوقفة حتى يعود الاتصال.',
   scoreHeading: 'النتيجة',
   roundOver: 'انتهت الجولة',

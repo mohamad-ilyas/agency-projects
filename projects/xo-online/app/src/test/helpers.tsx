@@ -186,3 +186,12 @@ export async function playDrawXStarts(x: Mounted, o: Mounted) {
     await move(app, i, both)
   }
 }
+
+/**
+ * Text matcher for sentences that contain an isolated name (<bdi>, F-06): matches the innermost element whose full
+ * text equals `text`, even though the name sits in a child element.
+ */
+export function sentence(text: string) {
+  return (_content: string, el: Element | null) =>
+    !!el && el.textContent === text && ![...el.children].some((c) => c.textContent === text)
+}

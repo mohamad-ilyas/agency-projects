@@ -136,18 +136,20 @@ jobs:
           RELEASED: ${{ needs.release.outputs.released }}
           PAGE_URL: ${{ steps.deployment.outputs.page_url }}
         run: |
+          cat > "$RUNNER_TEMP/delivery.mjs" <<'JS'
+          import { writeFileSync } from "node:fs";
+          const [key, url, sha] = process.argv.slice(2);
+          const at = new Date().toISOString();
+          const report = { schema: "aicos.report/v1", reportId: `release-${key}-${sha.slice(0, 7)}`, sentAt: at, source: "claude_code",
+            summary: `${key} released and live`,
+            actions: [
+              { type: "deliverable.record", title: `${key} — live release`, deliverableType: "client_deliverable", location: url, description: `Released by the Release workflow after the COO's approval (commit ${sha.slice(0, 7)}).`, projectKey: key, ownerId: "EMP-001" },
+              { type: "message.post", kind: "direct", authorId: "EMP-001", body: `**${key} is live:** ${url}\n\nMerged into main after QA sign-off and the independent review, tests and build re-run by GitHub (commit ${sha.slice(0, 7)}). The full delivery notes are in the project on GitHub.` },
+            ] };
+          writeFileSync(process.env.RUNNER_TEMP + "/delivery.json", JSON.stringify(report));
+          JS
           for key in $RELEASED; do
             url="${PAGE_URL%/}/$key/"
-            node -e '
-              const [key, url, sha] = process.argv.slice(1);
-              const at = new Date().toISOString();
-              const report = { schema: "aicos.report/v1", reportId: `release-${key}-${sha.slice(0, 7)}`, sentAt: at, source: "claude_code",
-                summary: `${key} released and live`,
-                actions: [
-                  { type: "deliverable.record", title: `${key} — live release`, deliverableType: "client_deliverable", location: url, description: `Released by the Release workflow after the COO's approval (commit ${sha.slice(0, 7)}).`, projectKey: key, ownerId: "EMP-001" },
-                  { type: "message.post", kind: "direct", authorId: "EMP-001", body: `**${key} is live:** ${url}\n\nMerged into main after QA sign-off and the independent review, tests and build re-run by GitHub (commit ${sha.slice(0, 7)}). The full delivery notes are in the project on GitHub.` },
-                ] };
-              require("fs").writeFileSync(process.env.RUNNER_TEMP + "/delivery.json", JSON.stringify(report));
-            ' "$key" "$url" "$GITHUB_SHA"
+            node "$RUNNER_TEMP/delivery.mjs" "$key" "$url" "$GITHUB_SHA"
             node scripts/aicos-report.mjs "$RUNNER_TEMP/delivery.json" || echo "::warning::Could not report delivery for $key"
           done

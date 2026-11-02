@@ -3,7 +3,7 @@ import { waitFor } from '@testing-library/react'
 import { describe, expect, it } from 'vitest'
 import { starterForRound } from '../lib/game'
 import { MemoryBroker } from '../lib/transport'
-import { move, mount, playDrawXStarts, playTopRowWin, retainedRoom, startGame, type Mounted } from './helpers'
+import { move, mount, playDrawXStarts, playTopRowWin, retainedRoom, startGame, type Mounted, sentence } from './helpers'
 
 async function rematch(first: Mounted, second: Mounted) {
   await first.user.click(await first.q.findByRole('button', { name: 'Play again' }))
@@ -19,7 +19,7 @@ describe('US-8 Rematch and score', () => {
     expect(await host.q.findByTestId('waiting-rematch')).toHaveTextContent('Waiting for Bob…')
     expect(host.q.queryByRole('button', { name: 'Play again' })).toBeNull()
     // Opponent is told; round has not started for anyone.
-    expect(await guest.q.findByText('Alice wants to play again')).toBeInTheDocument()
+    expect(await guest.q.findByText(sentence('Alice wants to play again'))).toBeInTheDocument()
     await new Promise((r) => setTimeout(r, 20))
     expect(retainedRoom(broker, id)!.status).toBe('finished')
     expect(retainedRoom(broker, id)!.round).toBe(1)

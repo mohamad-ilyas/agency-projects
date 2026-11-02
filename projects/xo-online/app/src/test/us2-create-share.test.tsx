@@ -2,7 +2,7 @@
 import { waitFor, within } from '@testing-library/react'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { MemoryBroker } from '../lib/transport'
-import { createGame, enterName, mount, retainedRoom } from './helpers'
+import { createGame, enterName, mount, retainedRoom, sentence } from './helpers'
 
 function setShare(fn: ((data: ShareData) => Promise<void>) | undefined) {
   if (fn) Object.defineProperty(navigator, 'share', { value: fn, configurable: true, writable: true })
@@ -88,7 +88,7 @@ describe('US-2 Create and share', () => {
     const visitor = mount(broker, 'us2-f-visitor')
     await enterName(visitor, 'Zed')
     const list = await visitor.q.findByTestId('lobby-list')
-    expect(within(list).getByText('Alice’s game')).toBeInTheDocument()
+    expect(within(list).getByText(sentence('Alice’s game'))).toBeInTheDocument()
     await waitFor(() => expect(within(list).getAllByRole('listitem')).toHaveLength(1))
   })
 })
