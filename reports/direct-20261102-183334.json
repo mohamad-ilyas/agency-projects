@@ -1,0 +1,6 @@
+{ "schema": "aicos.report/v1", "reportId": "direct-20261102-183334", "sentAt": "2026-11-02T18:33:34Z", "source": "claude_code_web",
+  "summary": "CEO asked for the xo-online status; COO answered on the Direct line.",
+  "actions": [
+    { "type": "message.post", "kind": "direct", "authorId": "EMP-001",
+      "body": "> what is the xo project status?\n\nxo-online preview is live at https://mohamad-ilyas.github.io/agency-projects/xo-online/ since 2026-11-01 (Publish previews run 41356781424, built from 585b4d1). Spec, build, tests (88/88 passing; CI runs 41355320188 and 41356126723 green) and independent review (Go with conditions) are done. Not released to main: no release.json yet, and I will not approve the release until the review conditions are met. Open: (1) CEO to confirm assumptions A1-A6, chiefly A1 (free public MQTT broker, open lobby); (2) EMP-011 two-device live check and reduced-motion check - live online play is unverified; (3) approve xo-online/preview in the Approval Center; (4) non-blocking test-report figure fix and follow-ups F-02, F-03, F-06, F-09 (EMP-008). Recommendation: confirm A1-A6 as assumed, then I schedule the live check and the follow-ups before release." }
+  ] }
