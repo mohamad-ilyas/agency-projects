@@ -144,7 +144,7 @@ jobs:
               const report = { schema: "aicos.report/v1", reportId: `release-${key}-${sha.slice(0, 7)}`, sentAt: at, source: "claude_code",
                 summary: `${key} released and live`,
                 actions: [
-                  { type: "deliverable.record", title: `${key} — live release`, deliverableType: "client_deliverable", location: url, description: `Released by the Release workflow after the COO's approval (commit ${sha.slice(0, 7)}).`, projectKey: key, ownerId: "EMP-001" },
+                  { type: "deliverable.record", title: `${key} — live release`, deliverableType: "client_deliverable", location: url, description: `Released by the Release workflow after approval by the COO (commit ${sha.slice(0, 7)}).`, projectKey: key, ownerId: "EMP-001" },
                   { type: "message.post", kind: "direct", authorId: "EMP-001", body: `**${key} is live:** ${url}\n\nMerged into main after QA sign-off and the independent review, tests and build re-run by GitHub (commit ${sha.slice(0, 7)}). The full delivery notes are in the project on GitHub.` },
                 ] };
               require("fs").writeFileSync(process.env.RUNNER_TEMP + "/delivery.json", JSON.stringify(report));
