@@ -1,0 +1,21 @@
+# Starts the Release workflow (on main) the moment the COO commits an approval,
+# instead of waiting for the next scheduled run (GitHub can delay schedules by hours).
+name: Release trigger
+
+on:
+  push:
+    branches: ["project/**"]
+    paths: ["projects/*/release.json"]
+
+permissions:
+  actions: write
+
+jobs:
+  trigger:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Start Release on main
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run release.yml --repo "${{ github.repository }}" --ref main

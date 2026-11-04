@@ -9,7 +9,7 @@ Dashboard: https://mohamad-ilyas.github.io/ai-company-os/ (source: mohamad-ilyas
 - Releases: the COO (Charlotte) approves by committing `projects/<key>/release.json`; the **Release** workflow merges and
   deploys it to /agency-projects/<key>/ and reports the delivery. Learning: `/learn` updates `playbooks/`.
 - Each client project lives in `projects/<key>/` on branch `project/<key>`; `PROJECT.md` there is its state file.
-- The 13 employees are subagents in `.claude/agents/`. They are generated from the dashboard repository — edit them there
+- The 15 employees are subagents in `.claude/agents/`. They are generated from the dashboard repository — edit them there
   and re-export (`npm run kit:export -- ../agency-projects` in ai-company-os), not here.
 - Report every stage to the dashboard with `node scripts/aicos-report.mjs <file>` (see `docs/agent-report.md`).
   The agent key comes from `AICOS_AGENT_KEY` or the macOS Keychain item `aicos-agent-key`; never write it to a file.

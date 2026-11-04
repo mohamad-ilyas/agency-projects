@@ -46,6 +46,29 @@ jobs:
           git config user.name "AI Company OS release (approved by COO)"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           released=""
+          # Release gate, written to a file (a quoted heredoc: no shell quoting inside the script).
+          # Needs the COO's approval in release.json AND exactly one line "Verdict: Go" or
+          # "Verdict: Go with conditions" in docs/review.md (any other, extra, or No-go verdict line refuses).
+          # "Go with conditions" ships only when the COO records in release.json that the conditions are met.
+          cat > "$RUNNER_TEMP/check-release.mjs" <<'JS'
+          import { readFileSync } from "node:fs";
+          const [releasePath, reviewPath] = process.argv.slice(2);
+          const fail = (msg) => { console.log(msg); process.exit(1); };
+          let r;
+          try { r = JSON.parse(readFileSync(releasePath, "utf8")); } catch { fail("release.json is not valid JSON"); }
+          if (r.decision !== "approved" || r.by !== "EMP-001") fail("release.json is not an approval by EMP-001");
+          const review = readFileSync(reviewPath, "utf8");
+          // Every line that starts with "Verdict" (after Markdown markup) counts; there must be exactly one.
+          const lines = review.split(/\r?\n/).filter((l) => /^[#>*_ \t]*verdict\b/i.test(l));
+          if (lines.length !== 1) fail(`docs/review.md must have exactly one "Verdict:" line (found ${lines.length})`);
+          if (/no[- ]?go/i.test(lines[0])) fail("independent review verdict is No-go");
+          const m = lines[0].match(/^[#>*_ \t]*verdict[*_ \t]*:[*_ \t]*(go with conditions|go)[*_. \t]*$/i);
+          if (!m) fail(`unrecognised verdict line: ${lines[0].trim()}`);
+          const verdict = m[1].toLowerCase();
+          if (String(r.reviewVerdict ?? "").toLowerCase() !== verdict) fail(`release.json reviewVerdict (${r.reviewVerdict}) does not match the review (${verdict})`);
+          if (verdict === "go with conditions" && r.conditionsMet !== true) fail("verdict is Go with conditions but release.json does not record conditionsMet: true");
+          console.log(`release approved by EMP-001; independent review verdict: ${verdict}`);
+          JS
           for ref in $(git for-each-ref --format='%(refname:short)' refs/remotes/origin | grep -vx 'origin/HEAD' | grep -vx 'origin' | grep -vx 'origin/main'); do
             if git merge-base --is-ancestor "$ref" origin/main; then continue; fi
             branch="${ref#origin/}"
@@ -55,14 +78,11 @@ jobs:
                 rel="projects/$key/release.json"
                 if ! git cat-file -e "$ref:$rel" 2>/dev/null; then continue; fi
                 git show "$ref:$rel" > "$RUNNER_TEMP/release.json"
-                if ! node -e "const r=require(process.argv[1]); process.exit(r.decision==='approved' && r.by==='EMP-001' ? 0 : 1)" "$RUNNER_TEMP/release.json"; then
-                  echo "::notice::$key: release.json is not an approval by EMP-001 — skipped"; continue
+                git show "$ref:projects/$key/docs/review.md" > "$RUNNER_TEMP/review.md" 2>/dev/null || : > "$RUNNER_TEMP/review.md"
+                if ! why=$(node "$RUNNER_TEMP/check-release.mjs" "$RUNNER_TEMP/release.json" "$RUNNER_TEMP/review.md"); then
+                  echo "::warning::$key: $why — not released"; continue
                 fi
-                # The reviewer's verdict line (Verdict/Recommendation: Go | Go with conditions | No-go).
-                verdict=$(git show "$ref:projects/$key/docs/review.md" 2>/dev/null | grep -iE '(verdict|recommendation)' | grep -ioE 'no-go|go with conditions|\bgo\b' | head -1 | tr 'A-Z' 'a-z')
-                if [ "$verdict" != "go" ] && [ "$verdict" != "go with conditions" ]; then
-                  echo "::warning::$key: independent review verdict is '${verdict:-missing}' — not released"; continue
-                fi
+                echo "::notice::$key: $why"
                 rm -rf "$RUNNER_TEMP/wt"; git worktree add --detach "$RUNNER_TEMP/wt" "$ref" > /dev/null
                 app="$RUNNER_TEMP/wt/projects/$key/app"
                 if [ -f "$app/package.json" ]; then

@@ -57,16 +57,25 @@ const NO_KEY =
   "Fallback: show the CEO the report JSON to paste into Execution Center → Import team report.\n" +
   "Setup: dashboard → Settings → AI team channel → Create agent key (Mac: Keychain; Claude Code on the web: network secret).";
 
+// The config next to this script wins over one in the current folder, and the key is only ever sent to the
+// dashboard's own Supabase project: a repository can't redirect it with an aicos.config.json of its own.
+const PINNED_HOST = "qdezhdwmjrmpqjgzludj.supabase.co"; // public project ref, not a secret
 const here = dirname(fileURLToPath(import.meta.url));
-const configPath = [join(process.cwd(), "aicos.config.json"), join(here, "..", "aicos.config.json")].find(existsSync);
+const configPath = [join(here, "..", "aicos.config.json"), join(process.cwd(), "aicos.config.json")].find(existsSync);
 if (!configPath) {
   console.error("aicos.config.json not found (it holds the public dashboard connection settings).");
   process.exit(2);
 }
 const config = JSON.parse(readFileSync(configPath, "utf8"));
+const target = new URL(config.supabaseUrl);
+if (target.protocol !== "https:" || target.host !== PINNED_HOST) {
+  console.error(`REFUSED: aicos.config.json points at ${target.host}, not the dashboard (${PINNED_HOST}). The agent key was not sent.`);
+  process.exit(2);
+}
 
-const res = await fetch(`${config.supabaseUrl}/rest/v1/rpc/submit_agent_report`, {
+const res = await fetch(`${target.origin}/rest/v1/rpc/submit_agent_report`, {
   method: "POST",
+  redirect: "error",
   headers: { apikey: config.supabasePublishableKey, "Content-Type": "application/json" },
   // Without a local key, send none: in Claude Code on the web the proxy adds it as a header.
   body: JSON.stringify(key ? { p_key: key, p_payload: report } : { p_payload: report }),

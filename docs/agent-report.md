@@ -6,7 +6,9 @@ Every stage ends with a report file **committed in the repository** — `project
 node scripts/aicos-report.mjs projects/<key>/reports/<NNNN>.json || true
 ```
 
-`reportId` must be unique and stable: the dashboard stores each `reportId` once, so re-sending is always safe.
+`reportId` must be unique and stable (a string of 8–100 characters): the dashboard stores each `reportId` once, so re-sending the **same file** is always safe. A different report needs a new `reportId` — re-using one with changed content is refused. The dashboard remembers which actions of each report it applied: a re-delivered report never runs an action twice, and re-applying a partial report retries only the actions that failed.
+
+Limits (server-side): 256 KB per report; 60 reports or 5 MB per hour; at most 200 reports waiting to be applied. The script only ever sends the key to the dashboard's own Supabase project (`qdezhdwmjrmpqjgzludj.supabase.co`) — an `aicos.config.json` pointing anywhere else is refused.
 
 - Exit 0 `SENT` — it is in the CEO's inbox; the dashboard applies it on its next sync.
 - The key comes from `AICOS_AGENT_KEY`, the macOS Keychain item `aicos-agent-key`, or — in Claude Code on the web — a network secret that adds the `X-Aicos-Agent-Key` header outside the session.
@@ -14,6 +16,8 @@ node scripts/aicos-report.mjs projects/<key>/reports/<NNNN>.json || true
 - Exit 1 — invalid or rejected. Fix and resend; never claim it was delivered.
 
 The dashboard applies each action through the company's normal rules, attributed to the employee named in it. The team **cannot** decide CEO approvals, delete anything, change settings, or complete a task that has a protected action — those go to the CEO's Approval Center.
+
+Approval rules the dashboard enforces: only Charlotte (EMP-001) decides, only COO-level actions, never a request she filed herself (that goes to the CEO), and always with a `note` (the evidence). A protected task or a project release moves on only on the decision of **its own** request — another approval linked to it changes nothing. A task's protected action can't be changed or removed by a report once set. If approved work is reopened, it needs a fresh approval.
 
 Full schema: `docs/agent-report.schema.json`.
 
