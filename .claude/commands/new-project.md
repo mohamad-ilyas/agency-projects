@@ -74,6 +74,10 @@ For each stage: delegate → save outputs to files → have the reviewer (a diff
 
 ## Reporting
 
+**Live progress.** The CEO watches the dashboard live. Send a short report when each stage **starts** (`task.status` → `in_progress` for that stage's task, plus a one-line `message.post` from Sarah: who is doing what now) and the full report when it **ends**. An immediate send reaches the dashboard within seconds; the committed file is the fallback.
+
+**Dashboard records.** If the request names a dashboard project or task (`PRJ-003`, `TSK-0012`), it already exists: use its id in lowercase as the key (`"key": "prj-003"`, `"projectKey": "prj-003"`, `"taskKey": "tsk-0012"`) so the team's work updates it instead of creating a duplicate. The project folder and branch use the same key (`projects/prj-003/`, `project/prj-003`).
+
 After **every** stage, write the report to **`projects/<key>/reports/<NNNN>.json`** (format: `docs/agent-report.md`; `reportId` = `<key>-<NNNN>`, unique and never reused), **commit it with the stage's work, and push**. GitHub's *Deliver team reports* workflow sends committed reports to the CEO's dashboard within ~10 minutes — this works even when the session cannot reach the dashboard directly. Then also try an immediate send (harmless if it fails, never a duplicate):
 
 ```bash

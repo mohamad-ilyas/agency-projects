@@ -17,6 +17,8 @@ Limits (server-side): 256 KB per report; 60 reports or 5 MB per hour; at most 20
 
 The dashboard applies each action through the company's normal rules, attributed to the employee named in it. The team **cannot** decide CEO approvals, delete anything, change settings, or complete a task that has a protected action — those go to the CEO's Approval Center.
 
+Keys: the team's own (`cedar-app`, `cedar-app/build`), or a dashboard id in lowercase (`prj-003`, `tsk-0012`) to update a project or task the CEO created in the dashboard — an unknown dashboard id is refused rather than creating a look-alike.
+
 Approval rules the dashboard enforces: only Charlotte (EMP-001) decides, only COO-level actions, never a request she filed herself (that goes to the CEO), and always with a `note` (the evidence). A protected task or a project release moves on only on the decision of **its own** request — another approval linked to it changes nothing. A task's protected action can't be changed or removed by a report once set. If approved work is reopened, it needs a fresh approval.
 
 Full schema: `docs/agent-report.schema.json`.
