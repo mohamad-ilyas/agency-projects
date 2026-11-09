@@ -1,0 +1,129 @@
+{
+  "schema": "aicos.report/v1",
+  "reportId": "learning-2026-11-09",
+  "sentAt": "2026-11-09T04:11:02Z",
+  "source": "claude_code_web",
+  "summary": "Weekly learning: COO, Business Analyst, Project Manager, Graphic Designer playbooks created (web access limited; unverifiable items omitted)",
+  "actions": [
+    {
+      "type": "knowledge.upsert",
+      "key": "learning/coo/2026-11-09",
+      "title": "What's new — Charlotte Ashworth (COO), November 2026",
+      "category": "learning",
+      "tags": [
+        "coo"
+      ],
+      "authorId": "EMP-001",
+      "body": "Learned: the 2025 DORA findings say AI amplifies existing practice, which supports our strict release gate and independent review. Will do differently: attach CI run IDs and condition owners to every release decision, and test release automation before use. Sources: dora.dev/research/ai; blog.google DORA 2025; Google Cloud AI Capabilities Model report. Could not check: dora.dev, Atlassian, HBR, Shape Up directly (network blocked)."
+    },
+    {
+      "type": "knowledge.upsert",
+      "key": "playbook/coo",
+      "title": "Playbook — Charlotte Ashworth (COO)",
+      "category": "learning",
+      "tags": [
+        "coo",
+        "playbook"
+      ],
+      "authorId": "EMP-001",
+      "body": "# Playbook — Charlotte Ashworth, Senior Chief Operating Officer\nLast updated: 2026-11-09\n\n## Standards we follow\n- Judge delivery health with the four DORA delivery metrics (lead time, deploy frequency, change failure rate, recovery time) plus rework; track trends, never rank people by them.\n- Release only with evidence in hand: CI run IDs, the independent review verdict, and a named list of conditions with owners. A release with open conditions says so in the delivery brief.\n- Keep batches small: one project, one release.json, one rollback path (revert the release commit).\n- Treat AI as an amplifier: it speeds up good process and bad process alike, so strengthen tests, review and release gates before adding speed.\n- Escalate to the CEO only decisions that are the CEO's (spend, contracts, client contact, deleting data) with options and a recommendation.\n\n## What's new\n- **DORA 2025 report, 'State of AI-assisted Software Development'** (survey of nearly 5,000 professionals, run June–July 2025; Google reported AI adoption at 90%). Headline: AI is an amplifier of an organisation's existing strengths and dysfunctions, and AI adoption is now linked to higher delivery throughput (reversing 2024). Companion 'AI Capabilities Model' names seven foundational capabilities, one being a clear, communicated AI stance. Sources: [dora.dev/research/ai](https://www.dora.dev/research/ai), [Google blog](https://blog.google/technology/developers/dora-report-2025/), [AI Capabilities Model report](https://cloud.google.com/resources/content/2025-dora-ai-capabilities-model-report). Published 2025; exact day not confirmed and it is slightly over a year old, so it moves to Standards next session. We could not retrieve the full list of the seven capabilities.\n- No newer DORA research release (2026) could be confirmed; searches returned only the unrelated EU financial-sector DORA regulation.\n\n_Web access note: the session could open no resource sites directly (fetch blocked); findings come from web search only, and items a search could not confirm are left out._\n\n## Lessons from our projects\n- xo-online (Nov 2026): the Release workflow deployed correctly but its final 'report delivery' step failed on a shell heredoc syntax error; the independent reviewer reproduced and fixed it. Lesson: test the release automation itself on a dry run before relying on it, and check the delivery report actually arrived.\n- xo-online: the live two-device check (F-01) was deferred until after deploy by COO decision. Lesson: when deferring a check, record owner, deadline and what happens if it fails, in release.json.\n- Both reviews ended 'Go with conditions'. Track condition closure explicitly in the next status update; open Low findings were still open a day later (stale PROJECT.md status).\n\n## Watch list\n- Read the full DORA AI Capabilities Model and map the seven capabilities to our own pipeline.\n- Check Atlassian Team Playbook and Shape Up for updates (searches found nothing authoritative).\n- Whether a DORA 2026 research report is published.\n"
+    },
+    {
+      "type": "message.post",
+      "kind": "department",
+      "departmentId": "executive",
+      "authorId": "EMP-001",
+      "body": "Learned: the 2025 DORA findings say AI amplifies existing practice, which supports our strict release gate and independent review. Will do differently: attach CI run IDs and condition owners to every release decision, and test release automation before use."
+    },
+    {
+      "type": "knowledge.upsert",
+      "key": "learning/business-analyst/2026-11-09",
+      "title": "What's new — Oliver Bennett (Business Analyst), November 2026",
+      "category": "learning",
+      "tags": [
+        "business-analyst"
+      ],
+      "authorId": "EMP-002",
+      "body": "Learned: declarative Given/When/Then with Rule grouping, and that AI-drafted stories still need human validation. Will do differently: add RTL, accessible-name and hostile-input criteria to the requirements template, and keep one AC register. Sources: Cucumber Gherkin reference (via search), practitioner 2026 guides (low authority). Could not check: cucumber.io, IIBA, Modern Analyst, NN/g directly."
+    },
+    {
+      "type": "knowledge.upsert",
+      "key": "playbook/business-analyst",
+      "title": "Playbook — Oliver Bennett (Business Analyst)",
+      "category": "learning",
+      "tags": [
+        "business-analyst",
+        "playbook"
+      ],
+      "authorId": "EMP-002",
+      "body": "# Playbook — Oliver Bennett, Senior Business Analyst\nLast updated: 2026-11-09\n\n## Standards we follow\n- Every requirement gets an ID and at least one acceptance criterion a tester can pass or fail; no 'fast', 'easy' or 'user-friendly' without a number.\n- Write stories as who / what / why, then acceptance criteria as declarative Given/When/Then: state the business behaviour, not click-by-click UI steps.\n- One behaviour per scenario; keep Background to 2–3 steps; use Gherkin `Rule` to group scenarios under one business rule.\n- List assumptions separately (A-1…) with a default so work is not blocked; the CEO or COO confirms them.\n- For Arabic/English products, specify RTL, plural forms, and name/bidi handling as requirements, not afterthoughts.\n- Use AI to draft stories, but a human validates them with the client; AI cannot rank business value or fill gaps in vague specs.\n\n## What's new\n- **Gherkin `Rule` keyword** (available since Gherkin v6) groups scenarios by business rule; it is documentation only and some tools support it slowly, so check tooling. Source: [Cucumber Gherkin reference](https://cucumber.io/docs/gherkin/reference/) (via search summary; page not opened). Not a new item this quarter; recorded as a standard.\n- AI-assisted requirements guidance in 2026 converges on: AI drafts stories and criteria from research notes, humans do discovery, prioritisation and validation. Sources are vendor and practitioner blogs, e.g. [boundev.ai 2026 guide](https://www.boundev.ai/blog/how-to-write-user-story-guide-2026); low authority, treat as opinion, no exact date confirmed.\n- No NN/g or IIBA 2026 publication on this topic could be confirmed.\n\n_Web access note: the session could open no resource sites directly (fetch blocked); findings come from web search only, and items a search could not confirm are left out._\n\n## Lessons from our projects\n- todo-app review: 20 acceptance criteria were all verifiable, because each AC had an ID that tests reused (e.g. 'AC-1.1'). Keep that ID convention.\n- todo-app F-4/F-5: requirements named RTL and accessibility in general but not safe-area insets in RTL or accessible names for the language switch. Add explicit RTL and accessible-name criteria to the template.\n- xo-online: the spec's anti-cheat exclusion (A1) and untrusted-input risks surfaced only in review (F-02 to F-06). Add a 'what if another client sends hostile data?' discovery question for any multiplayer or shared-data product.\n- xo-online F-08: AC counts in the test report disagreed with the spec (42 ACs, 36 covered, 6 partial). Keep one AC register and mark partial coverage up front.\n\n## Watch list\n- Open the Gherkin reference, IIBA and NN/g pages directly when the network allows.\n- Evaluate a short 'hostile input' discovery checklist.\n- Check whether EN 301 549 v4 / WCAG 2.2 should become a default non-functional requirement for EU clients.\n"
+    },
+    {
+      "type": "message.post",
+      "kind": "department",
+      "departmentId": "executive",
+      "authorId": "EMP-002",
+      "body": "Learned: declarative Given/When/Then with Rule grouping, and that AI-drafted stories still need human validation. Will do differently: add RTL, accessible-name and hostile-input criteria to the requirements template, and keep one AC register."
+    },
+    {
+      "type": "knowledge.upsert",
+      "key": "learning/project-manager/2026-11-09",
+      "title": "What's new — Sarah Mitchell (Project Manager), November 2026",
+      "category": "learning",
+      "tags": [
+        "project-manager"
+      ],
+      "authorId": "EMP-003",
+      "body": "Learned: the Scrum Guide Expansion Pack (June 2025) is optional and unofficial; core guide unchanged. Will do differently: include 'state file and test report match latest evidence' in every stage's definition of done, and plan a re-review round. Sources: SensioLabs summary, ScrumGuides GitHub repo. Could not check: scrumguides.org, kanban.university, Atlassian, APM, Shape Up directly."
+    },
+    {
+      "type": "knowledge.upsert",
+      "key": "playbook/project-manager",
+      "title": "Playbook — Sarah Mitchell (Project Manager)",
+      "category": "learning",
+      "tags": [
+        "project-manager",
+        "playbook"
+      ],
+      "authorId": "EMP-003",
+      "body": "# Playbook — Sarah Mitchell, Senior Project Manager\nLast updated: 2026-11-09\n\n## Standards we follow\n- Plan in small, shippable slices with explicit dependencies; a task starts only when its dependsOn tasks are completed.\n- Limit work in progress; use a Kanban board (To do, Doing, Review, Done) with visible blockers.\n- Maintain a risk and issue log with owner, likelihood, impact, next action and date; review it at every status report.\n- Status reports lead with: decision needed, risks, what shipped (with evidence links), what is next. Never report planned work as done.\n- Define 'done' per stage (spec approved, tests passing with CI run ID, review verdict recorded) before the stage starts.\n- Use Shape Up style fixed time, variable scope when the schedule is the constraint.\n\n## What's new\n- **Scrum Guide Expansion Pack** published 2025-06-11 by Jeff Sutherland, Ralph Jocham and John Coleman: an optional, community supplement to the unchanged 2020 Scrum Guide, aimed at issues such as AI adoption and fast delivery. Not an official new Scrum Guide edition; the commentary is mixed. Sources: [SensioLabs summary](https://sensiolabs.com/blog/2025/scrum-guide-expansion-pack-2025-key-insights-you-need-to-know), [GitHub repo](https://github.com/ScrumGuides/ScrumGuide-ExpansionPack). Over a year old, so keep as context only. We found no official scrum.org announcement.\n- No new Kanban Guide revision could be confirmed (last known update January 2021 for the Kanban Guide for Scrum Teams).\n\n_Web access note: the session could open no resource sites directly (fetch blocked); findings come from web search only, and items a search could not confirm are left out._\n\n## Lessons from our projects\n- xo-online: PROJECT.md 'Status' still said 'not published' after release (review F-08). Update the state file in the same commit as the release approval.\n- todo-app F-6: the test report said 'CI not yet run' after three green runs. Make the PM stage checklist include 'docs match latest evidence'.\n- Both projects needed a second review round; plan the fix and re-review stage into the schedule instead of treating it as a surprise.\n\n## Watch list\n- Open scrumguides.org and kanbanguides.org directly to check for any official revision.\n- Evaluate whether the Expansion Pack's Product Goal / release guidance helps our single-release flow.\n- Atlassian Agile Coach and APM resources: not opened this session.\n"
+    },
+    {
+      "type": "message.post",
+      "kind": "department",
+      "departmentId": "executive",
+      "authorId": "EMP-003",
+      "body": "Learned: the Scrum Guide Expansion Pack (June 2025) is optional and unofficial; core guide unchanged. Will do differently: include 'state file and test report match latest evidence' in every stage's definition of done, and plan a re-review round."
+    },
+    {
+      "type": "knowledge.upsert",
+      "key": "learning/graphic-designer/2026-11-09",
+      "title": "What's new — Imogen Clarke (Graphic Designer), November 2026",
+      "category": "learning",
+      "tags": [
+        "graphic-designer"
+      ],
+      "authorId": "EMP-004",
+      "body": "Learned: WCAG 3.0 is still a March 2026 working draft, so 2.2 AA contrast stays our rule; Alexandria is a matched bilingual variable option. Will do differently: include mixed Arabic/Latin and RTL mock-ups plus reduced-motion fallbacks in specs. Sources: W3C WAI 2026-03-03, fontalternatives.com (secondary), Level Access (vendor). Could not check: fonts.google.com, Brand New, Typewolf, WebAIM directly."
+    },
+    {
+      "type": "knowledge.upsert",
+      "key": "playbook/graphic-designer",
+      "title": "Playbook — Imogen Clarke (Graphic Designer)",
+      "category": "learning",
+      "tags": [
+        "graphic-designer",
+        "playbook"
+      ],
+      "authorId": "EMP-004",
+      "body": "# Playbook — Imogen Clarke, Senior Graphic Designer & Brand Identity Specialist\nLast updated: 2026-11-09\n\n## Standards we follow\n- Design the mark to work in one colour, at 16px, and mirrored contexts; deliver SVG with a transparent background and a clear-space rule.\n- Bilingual identities: pair Arabic and Latin faces matched for x-height, weight and colour on the line; test Arabic with real words, not lorem ipsum.\n- Contrast: WCAG 2.2 AA is the baseline (4.5:1 body text, 3:1 large text and UI components); check every colour pair, in light and dark themes.\n- Never rely on colour alone to convey meaning (status, errors, overdue); pair with icon or text.\n- Check licences: only open-licence fonts (OFL) and assets, since the work is public and costs $0.\n- Document tokens (colours, type scale, spacing) in brand guidelines so engineers and the design reviewer can verify them.\n\n## What's new\n- **WCAG 3.0 Working Draft, March 2026** (W3C, 2026-03-03): still a draft, not a standard; contrast method (APCA) status is disputed between sources. WCAG 2.2 remains the compliance reference. Sources: [W3C WAI news 2026-03-03](https://www.w3.org/WAI/news/2026-03-03/wcag3), [W3C WCAG 3.0 draft](https://www.w3.org/TR/wcag-3.0/). Action: keep using 2.2 AA contrast; do not adopt APCA thresholds.\n- **Alexandria** (Google Fonts) is a free variable Arabic and Latin family with nine weights and matched proportions, useful for bilingual identities. Source: [fontalternatives.com](https://fontalternatives.com/fonts/alexandria/) (secondary source; verify on fonts.google.com; no date confirmed, not a new release).\n- European Accessibility Act has applied since 2025-06-28; its legal reference is EN 301 549, and sources disagree on whether WCAG 2.1 or 2.2 is formally required, so design to 2.2 AA. Source: [Level Access summary](https://www.levelaccess.com/blog/eaa-compliance-in-2026-how-enforcement-has-evolved-and-what-to-expect-next/) (vendor blog; verify against EUR-Lex).\n\n_Web access note: the session could open no resource sites directly (fetch blocked); findings come from web search only, and items a search could not confirm are left out._\n\n## Lessons from our projects\n- xo-online F-06: player names mixing Arabic and Latin broke visually until wrapped in bidi isolation (<bdi>). Brand/type specs should show mixed-direction names and numerals.\n- todo-app: overdue state used text plus an icon, not colour alone, and the reviewer verified it in a render. Keep this pattern.\n- todo-app F-4: safe-area insets swap in RTL. Any edge-to-edge graphic needs an RTL mock.\n- xo-online F-07: reduced-motion behaviour was only checked in Chromium. Specify a static fallback for any animated brand asset.\n\n## Watch list\n- Verify Alexandria and other Arabic families on fonts.google.com.\n- Track WCAG 3.0 drafts and the EN 301 549 v4 status.\n- Open Brand New, Typewolf and Google Fonts Knowledge, not reachable this session.\n"
+    },
+    {
+      "type": "message.post",
+      "kind": "department",
+      "departmentId": "design",
+      "authorId": "EMP-004",
+      "body": "Learned: WCAG 3.0 is still a March 2026 working draft, so 2.2 AA contrast stays our rule; Alexandria is a matched bilingual variable option. Will do differently: include mixed Arabic/Latin and RTL mock-ups plus reduced-motion fallbacks in specs."
+    }
+  ]
+}
