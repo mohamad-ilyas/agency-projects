@@ -31,7 +31,7 @@
   {
    "type": "message.post",
    "kind": "department",
-   "departmentId": "operations",
+   "departmentId": "executive",
    "authorId": "EMP-001",
    "body": "DORA ROI of AI-assisted development (2026.01) adds a J-curve view; AI Capabilities Model (Dec 2025) has 7 capabilities; AI adoption also links to instability."
   },
@@ -61,7 +61,7 @@
   {
    "type": "message.post",
    "kind": "department",
-   "departmentId": "delivery",
+   "departmentId": "executive",
    "authorId": "EMP-003",
    "body": "No official Scrum or Kanban Guide revision in 2026 (Scrum Guide still Nov 2020); PMI Agile Practice Guide 2nd ed."
   },
@@ -91,7 +91,7 @@
   {
    "type": "message.post",
    "kind": "department",
-   "departmentId": "delivery",
+   "departmentId": "executive",
    "authorId": "EMP-002",
    "body": "Gherkin tooling versions (Oct 2026, secondary); SpecFlow EOL 2024-12-31 so use Reqnroll for .NET; AI-generated scenarios need human validation."
   },
