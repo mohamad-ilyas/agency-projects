@@ -1,5 +1,5 @@
 # Playbook — Oliver Bennett, Senior Business Analyst
-Last updated: 2026-11-09
+Last updated: 2026-11-23
 
 ## Standards we follow
 - Every requirement gets an ID and at least one acceptance criterion a tester can pass or fail; no 'fast', 'easy' or 'user-friendly' without a number.
@@ -10,6 +10,10 @@ Last updated: 2026-11-09
 - Use AI to draft stories, but a human validates them with the client; AI cannot rank business value or fill gaps in vague specs.
 
 ## What's new
+- **Gherkin tooling snapshot (Oct 2026, secondary source)**: Cucumber-JVM 8.0.4, cucumber-js 13.3.0, pytest-bdd 9.0.0, behave 1.3.3, Reqnroll 3.3.4; SpecFlow reached end of life on 2024-12-31. Source: [issoh.co.jp guide](https://www.issoh.co.jp/md/tech/11693) (Japanese third-party page; verify on the Cucumber GitHub releases). Change: if a client needs .NET BDD, specify Reqnroll, not SpecFlow.
+- **AI and Gherkin (2026)**: practitioner sources describe generating test scenarios from stories and mockups and Gherkin as a shared layer between people and AI agents. Source: [testomat.io](https://testomat.io/?p=5374); a May 2026 press release is promotional and ignored. Opinion only; our rule stands that a human validates AI-drafted criteria.
+- No IIBA/BABOK update could be confirmed by search.
+_Web access note (2026-11-23): page fetches failed for dora.dev, infoq.com and pmi.org (hosts not allowed in this session); findings come from web search summaries only._
 - **Gherkin `Rule` keyword** (available since Gherkin v6) groups scenarios by business rule; it is documentation only and some tools support it slowly, so check tooling. Source: [Cucumber Gherkin reference](https://cucumber.io/docs/gherkin/reference/) (via search summary; page not opened). Not a new item this quarter; recorded as a standard.
 - AI-assisted requirements guidance in 2026 converges on: AI drafts stories and criteria from research notes, humans do discovery, prioritisation and validation. Sources are vendor and practitioner blogs, e.g. [boundev.ai 2026 guide](https://www.boundev.ai/blog/how-to-write-user-story-guide-2026); low authority, treat as opinion, no exact date confirmed.
 - No NN/g or IIBA 2026 publication on this topic could be confirmed.
@@ -26,3 +30,4 @@ _Web access note: the session could open no resource sites directly (fetch block
 - Open the Gherkin reference, IIBA and NN/g pages directly when the network allows.
 - Evaluate a short 'hostile input' discovery checklist.
 - Check whether EN 301 549 v4 / WCAG 2.2 should become a default non-functional requirement for EU clients.
+- Verify the Gherkin tool versions on the official Cucumber release pages.
