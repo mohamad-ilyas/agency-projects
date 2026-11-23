@@ -1,5 +1,5 @@
 # Playbook — Imogen Clarke, Senior Graphic Designer & Brand Identity Specialist
-Last updated: 2026-11-09
+Last updated: 2026-11-23
 
 ## Standards we follow
 - Design the mark to work in one colour, at 16px, and mirrored contexts; deliver SVG with a transparent background and a clear-space rule.
@@ -10,6 +10,9 @@ Last updated: 2026-11-09
 - Document tokens (colours, type scale, spacing) in brand guidelines so engineers and the design reviewer can verify them.
 
 ## What's new
+- **No new Google Fonts Arabic family could be confirmed for 2026.** Fontsource shows maintenance updates for Noto Sans Arabic (2026-03-12), Noto Kufi Arabic (2026-03-27) and Tajawal (2026-04-24); these are package updates, not new designs. Sources: [Fontsource Noto Sans Arabic](https://fontsource.org/fonts/noto-sans-arabic/about), [Tajawal](https://fontsource.org/fonts/tajawal/about). Change: re-pull font files before the next brand deliverable and check the changelog.
+- **Beiruti** is a variable Arabic font (Thin–Black) on Google Fonts; an option for display Arabic with a weight axis. Source: [BEIRUTI Libre Font](https://boutrosfonts.com/BEIRUTI-Libre-Font-Open-Source-Font.html) (designer page, undated); confirm OFL licence on fonts.google.com.
+_Web access note (2026-11-23): page fetches failed for dora.dev, infoq.com and pmi.org (hosts not allowed in this session); findings come from web search summaries only._
 - **WCAG 3.0 Working Draft, March 2026** (W3C, 2026-03-03): still a draft, not a standard; contrast method (APCA) status is disputed between sources. WCAG 2.2 remains the compliance reference. Sources: [W3C WAI news 2026-03-03](https://www.w3.org/WAI/news/2026-03-03/wcag3), [W3C WCAG 3.0 draft](https://www.w3.org/TR/wcag-3.0/). Action: keep using 2.2 AA contrast; do not adopt APCA thresholds.
 - **Alexandria** (Google Fonts) is a free variable Arabic and Latin family with nine weights and matched proportions, useful for bilingual identities. Source: [fontalternatives.com](https://fontalternatives.com/fonts/alexandria/) (secondary source; verify on fonts.google.com; no date confirmed, not a new release).
 - European Accessibility Act has applied since 2025-06-28; its legal reference is EN 301 549, and sources disagree on whether WCAG 2.1 or 2.2 is formally required, so design to 2.2 AA. Source: [Level Access summary](https://www.levelaccess.com/blog/eaa-compliance-in-2026-how-enforcement-has-evolved-and-what-to-expect-next/) (vendor blog; verify against EUR-Lex).
@@ -26,3 +29,4 @@ _Web access note: the session could open no resource sites directly (fetch block
 - Verify Alexandria and other Arabic families on fonts.google.com.
 - Track WCAG 3.0 drafts and the EN 301 549 v4 status.
 - Open Brand New, Typewolf and Google Fonts Knowledge, not reachable this session.
+- Check Beiruti and Readex Pro pairing tests against a Latin face.
